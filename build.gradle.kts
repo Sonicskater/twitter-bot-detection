@@ -12,10 +12,19 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/Sonicskater/twitter-bot-detection")
+        credentials {
+            username = "Sonicskater"
+            password = "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"
+        }
+    }
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1-fixed_streams")
 }
 
 
