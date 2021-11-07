@@ -25,11 +25,11 @@ fun main(args: Array<String>) {
 
 
             Entry(it, data)
-        }
+        }.toList()
 
 
 
-    println("ENTRIES: $entries")
+    println("ENTRIES: ${entries.map { it.data.size }}")
 
     val train = entries.find {
         it.z.name == "Twibot-20/train.json"
