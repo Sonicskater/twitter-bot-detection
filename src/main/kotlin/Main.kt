@@ -6,47 +6,13 @@ import java.util.zip.*
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
 
-    val filename = "Twibot-20.zip"
+    println("ENTRIES: ${ Datasets.dev.data.size }")
+    println("TWEETS: ${Datasets.dev.data.sumOf { it.tweet?.size ?: 0 } }")
 
-    val stream = ZipFile(filename)
+    val runtime = Runtime.getRuntime()
+    val usedMemory = runtime.totalMemory()-runtime.freeMemory()
 
-    val entries = stream.entries()
-        .asSequence()
-        .filter {
-            !it.isDirectory
-        }
-        .filter {
-            it.name.endsWith(".json")
-        }
-        .map {
-            val data = Json{
-                ignoreUnknownKeys = true
-            }.decodeFromStream<List<User>>(stream.getInputStream(it))
-
-
-            Entry(it, data)
-        }.toList()
-
-
-
-    println("ENTRIES: ${entries.map { it.data.size }}")
-
-    val train = entries.find {
-        it.z.name == "Twibot-20/train.json"
-    }
-
-    val support = entries.find {
-        it.z.name == "Twibot-20/support.json"
-    }
-
-    val dev = entries.find {
-        it.z.name == "Twibot-20/dev.json"
-    }
-
-    val test = entries.find {
-        it.z.name == "Twibot-20/test.json"
-    }
-
+    println("USING ${usedMemory/(1024*1024)} MEGABYTES")
 
 }
 
