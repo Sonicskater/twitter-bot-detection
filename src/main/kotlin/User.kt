@@ -40,7 +40,9 @@ data class Profile(
     val listed_count : String?,
     private val created_at: String?,
     private val verified : String?,
-    private val favourites_count : String?
+    private val favourites_count : String?,
+    val default_profile : String?,
+    val default_profile_image: String?
 ){
     @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
@@ -48,6 +50,18 @@ data class Profile(
     val likes: Int = favourites_count?.trim()?.toInt() ?: 0
 
     val isVerified = when (verified){
+        "False " -> false
+        "True " -> true
+        else -> throw Exception("????")
+    }
+
+    val isDefaultProfile = when (default_profile){
+        "False " -> false
+        "True " -> true
+        else -> throw Exception("????")
+    }
+
+    val isDefaultProfileImage = when (default_profile_image){
         "False " -> false
         "True " -> true
         else -> throw Exception("????")
