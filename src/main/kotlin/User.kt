@@ -39,11 +39,13 @@ data class Profile(
     val friends_count : String?,
     val listed_count : String?,
     private val created_at: String?,
-    private val verified : String?
+    private val verified : String?,
+    private val favourites_count : String?
 ){
     @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
     val following: Int = friends_count?.trim()?.toInt() ?: 0
+    val likes: Int = favourites_count?.trim()?.toInt() ?: 0
 
     val isVerified = when (verified){
         "False " -> false
