@@ -5,8 +5,17 @@ import kotlinx.serialization.json.*
 data class User(
     val ID: String,
     val profile: Profile?,
-    val tweet: List<String>? = null
-)
+    val tweet: List<String>? = null,
+    private val label: Int
+){
+    fun isBot(): Boolean {
+        return when(label){
+            0 -> false
+            1 -> true
+            else -> throw Exception("Invalid label variable")
+        }
+    }
+}
 
 @Serializable
 data class Profile(
