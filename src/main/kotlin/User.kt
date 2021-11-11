@@ -37,4 +37,5 @@ data class Profile(
     val listed_count : String?,
 ){
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
+    val following: Int = friends_count?.trim()?.toInt() ?: 0
 }
