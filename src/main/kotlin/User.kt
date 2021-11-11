@@ -1,12 +1,11 @@
 import kotlinx.serialization.*
-import kotlinx.serialization.json.*
 
 @Serializable
 data class User(
     val ID: String,
     val profile: Profile?,
     val tweet: List<String>? = null,
-    val label: Int? = null
+    private val label: Int? = null
 ){
     fun isBot(): Boolean {
         return when(label){
