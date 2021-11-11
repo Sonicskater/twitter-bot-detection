@@ -1,6 +1,6 @@
 class kNN(val k : Int = 3, val distance : (Array<Float>, Array<Float>) -> Float = EuclideanDistance) : Classifier{
 
-    val features : List<LinearFeature> = listOf(LessThan30Followers().asLinear())
+    val features : List<LinearFeature> = listOf(LessThan30Followers().asLinear(),LevenshtienDistanceLessThan30().asLinear())
 
     private fun extractFeatures(user: User) : Array<Float>{
         return features.map {
@@ -16,7 +16,10 @@ class kNN(val k : Int = 3, val distance : (Array<Float>, Array<Float>) -> Float 
     override fun classify(user: User): Classifier.Result {
         val userFeatures = extractFeatures(user)
 
+        //println(userFeatures.toList())
+
         val distances = knownFeatures.map { (user, features) ->
+
             user to distance(userFeatures, features)
         }
 
