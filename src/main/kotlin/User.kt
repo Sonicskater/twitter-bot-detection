@@ -38,11 +38,18 @@ data class Profile(
     private val followers_count : String?,
     val friends_count : String?,
     val listed_count : String?,
-    private val created_at: String?
+    private val created_at: String?,
+    private val verified : String?
 ){
     @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
     val following: Int = friends_count?.trim()?.toInt() ?: 0
+
+    val isVerified = when (verified){
+        "False " -> false
+        "True " -> true
+        else -> throw Exception("????")
+    }
 
     @Transient //marks field as ignore for serializer
     val creation_date : Date? = created_at?.let { date_parser.parse(it.trim()) }
