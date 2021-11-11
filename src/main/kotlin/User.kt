@@ -5,6 +5,7 @@ data class User(
     val ID: String,
     val profile: Profile?,
     val tweet: List<String>? = null,
+    val neighbor: Neighbor? = null,
     private val label: Int? = null
 ){
     fun isBot(): Boolean {
@@ -14,6 +15,14 @@ data class User(
             else -> throw Exception("Invalid label variable")
         }
     }
+}
+
+@Serializable
+data class Neighbor(
+    val following: List<String>,
+    val follower: List<String>
+) {
+
 }
 
 @Serializable
