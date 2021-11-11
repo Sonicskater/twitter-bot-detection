@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
 
 
 
-    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 157))
+    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 2000))
 
 
     for (c in classifiers) {

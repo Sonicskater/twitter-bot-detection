@@ -50,7 +50,8 @@ data class Profile(
     val isVerified = when (verified){
         "False " -> false
         "True " -> true
-        else -> throw Exception("????")
+        null -> false
+        else -> throw Exception("$verified ????")
     }
 
     @Transient //marks field as ignore for serializer

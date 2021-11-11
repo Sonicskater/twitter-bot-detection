@@ -26,6 +26,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1-fixed_streams")
     implementation("org.apache.commons:commons-text:1.9")
+    implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
 
