@@ -16,6 +16,22 @@ fun main(args: Array<String>) {
 
     println("USING ${usedMemory/(1024*1024)} MEGABYTES")
 
+    val total = Datasets.dev.data.size
+
+
+
+    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7))
+
+
+    for (c in classifiers) {
+        println(c)
+        val correct = Datasets.dev.data.count { user ->
+            c.classify(user).isBot() == user.isBot()
+        }
+        println("$correct results were correct out of $total (${correct.toDouble()/total * 100}% accuracy)")
+    }
+
+
 }
 
 data class Entry(
