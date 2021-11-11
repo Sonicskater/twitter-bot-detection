@@ -9,6 +9,8 @@ fun main(args: Array<String>) {
     println("ENTRIES: ${ Datasets.dev.data.size }")
     println("TWEETS: ${Datasets.dev.data.sumOf { it.tweet?.size ?: 0 } }")
 
+    println("BOTS: ${Datasets.dev.data.count { it.isBot() }} ")
+
     val runtime = Runtime.getRuntime()
     val usedMemory = runtime.totalMemory()-runtime.freeMemory()
 

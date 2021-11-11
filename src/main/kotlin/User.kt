@@ -6,12 +6,12 @@ data class User(
     val ID: String,
     val profile: Profile?,
     val tweet: List<String>? = null,
-    private val label: Int
+    val label: String? = null
 ){
     fun isBot(): Boolean {
         return when(label){
-            0 -> false
-            1 -> true
+            "0" -> false
+            "1" -> true
             else -> throw Exception("Invalid label variable")
         }
     }
