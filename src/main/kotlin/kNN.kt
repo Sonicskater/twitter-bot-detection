@@ -2,13 +2,13 @@ class kNN(val k : Int = 3, val distance : (Array<Double>, Array<Double>) -> Doub
 
     val features : List<LinearFeature> = listOf(
         LessThan30Followers().asLinear(),
-        //LevenshtienDistanceLessThan30().asLinear(),
-        //AgeLessThan2Months().asLinear(),
-        //HighFollowingToFollowersRatio().asLinear(),
-        //LessThan100Likes().asLinear(),
-        //MoreThan50Following().asLinear(),
-        //MoreThan100Followers().asLinear(),
-        //UserIsVerified().asLinear()
+        LevenshtienDistanceLessThan30().asLinear(),
+        AgeLessThan2Months().asLinear(),
+        HighFollowingToFollowersRatio().asLinear(),
+        LessThan100Likes().asLinear(),
+        MoreThan50Following().asLinear(),
+        MoreThan100Followers().asLinear(),
+        UserIsVerified().asLinear()
     )
 
     private fun extractFeatures(user: User) : Array<Double>{
