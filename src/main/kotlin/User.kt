@@ -52,7 +52,8 @@ data class Profile(
     val isVerified = when (verified){
         "False " -> false
         "True " -> true
-        else -> throw Exception("????")
+        null -> false
+        else -> throw Exception("$verified ????")
     }
 
     val isDefaultProfile = when (default_profile){

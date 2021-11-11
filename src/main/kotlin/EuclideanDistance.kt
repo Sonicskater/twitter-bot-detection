@@ -1,10 +1,8 @@
+import org.apache.commons.math3.ml.distance.EuclideanDistance
 import kotlin.math.pow
 
-object EuclideanDistance : Distance<Float>{
-    override fun distance(a: Array<Float>, b: Array<Float>): Float {
-        return a.zip(b).map { (a,b) -> (a-b).pow(2f) }.sum().pow(0.5f)
+object EuclideanDistance : Distance<Double>{
+    override fun distance(a: Array<Double>, b: Array<Double>): Double{
+        return EuclideanDistance().compute(a.toDoubleArray(),b.toDoubleArray())
     }
-
-
-
 }

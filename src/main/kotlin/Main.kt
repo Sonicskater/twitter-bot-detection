@@ -20,12 +20,12 @@ fun main(args: Array<String>) {
 
 
 
-    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 157))
+    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 50))
 
 
     for (c in classifiers) {
         println(c)
-        val correct = Datasets.dev.data.subList(1,10).count { user ->
+        val correct = Datasets.dev.data.count { user ->
             c.classify(user).isBot() == user.isBot()
         }
         println("$correct results were correct out of $total (${correct.toDouble()/total * 100}% accuracy)")
