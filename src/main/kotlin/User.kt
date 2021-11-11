@@ -42,7 +42,10 @@ data class Profile(
     private val verified : String?,
     private val favourites_count : String?,
     val default_profile : String?,
-    val default_profile_image: String?
+    val default_profile_image: String?,
+    val profile_use_background_image: String?,
+    val has_extended_profile: String?,
+    val profile_location: String?
 ){
     @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
@@ -66,6 +69,33 @@ data class Profile(
         "False " -> false
         "True " -> true
         else -> throw Exception("????")
+    }
+
+    val usesBackgroundImage = when (profile_use_background_image){
+        "False " -> false
+        "True " -> true
+        else -> throw Exception("????")
+    }
+
+    val hasExtendedProfile = when (has_extended_profile){
+        "False " -> false
+        "True " -> true
+        else -> throw Exception("????")
+    }
+
+    val hasLocation = when (location){
+        " " -> false
+        else -> true
+    }
+
+    val hasProfileLocation = when (profile_location){
+        "None " -> false
+        else -> true
+    }
+
+    val hasDescription = when (description){
+        " " -> false
+        else -> true
     }
 
     @Transient //marks field as ignore for serializer
