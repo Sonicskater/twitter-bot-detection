@@ -1,4 +1,7 @@
 import kotlinx.serialization.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 @Serializable
 data class User(
@@ -35,7 +38,16 @@ data class Profile(
     private val followers_count : String?,
     val friends_count : String?,
     val listed_count : String?,
+    private val created_at: String?
 ){
+    @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
     val following: Int = friends_count?.trim()?.toInt() ?: 0
+
+    @Transient //marks field as ignore for serializer
+    val creation_date : Date? = created_at?.let { date_parser.parse(it.trim()) }
+
+    companion object{
+        private val date_parser = SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH)
+    }
 }
