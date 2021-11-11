@@ -19,6 +19,7 @@ object Datasets {
             .map {
                 val data = Json{
                     ignoreUnknownKeys = true
+                    isLenient = true
                 }.decodeFromStream<List<User>>(stream.getInputStream(it))
 
 
