@@ -5,11 +5,17 @@ import java.util.zip.*
 
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
-
+    println("Dev Dataset:")
     println("ENTRIES: ${ Datasets.dev.data.size }")
     println("TWEETS: ${Datasets.dev.data.sumOf { it.tweet?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.dev.data.count { it.isBot() }} ")
+
+    println("Train Dataset:")
+    println("ENTRIES: ${ Datasets.train.data.size }")
+    println("TWEETS: ${Datasets.train.data.sumOf { it.tweet?.size ?: 0 } }")
+
+    println("BOTS: ${Datasets.train.data.count { it.isBot() }} ")
 
     val runtime = Runtime.getRuntime()
     val usedMemory = runtime.totalMemory()-runtime.freeMemory()
@@ -20,7 +26,7 @@ fun main(args: Array<String>) {
 
 
 
-    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 50))
+    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 50), kNN(k = 100), kNN(k = 150), kNN(k = 300))
 
 
     for (c in classifiers) {
