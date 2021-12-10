@@ -1,4 +1,6 @@
+
 import kotlinx.serialization.*
+import org.apache.commons.text.similarity.LevenshteinDistance
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,7 +20,24 @@ data class User(
             else -> throw Exception("Invalid label variable")
         }
     }
+    val levenshteinDistanceLessThan30: Boolean by lazy{
+        if (this.tweet == null) {
+            true
+        } else {
+            val l = LevenshteinDistance(30)
+            this.tweet
+                // cross product
+                .flatMap { a ->
+                    this.tweet.map { b-> a to b  }
+                }
+                .parallelStream()
+                .allMatch { (a,b) ->
+                    l.apply(a,b) >= 0
+                }
+        }
+    }
 }
+
 
 @Serializable
 data class Neighbor(

@@ -1,7 +1,7 @@
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import java.util.zip.*
+import kotlin.math.pow
+import kotlin.streams.asStream
 
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
@@ -24,18 +24,49 @@ fun main(args: Array<String>) {
 
     val total = Datasets.dev.data.size
 
+    val features : List<LinearFeature> = listOf(
+        AgeLessThan2Months().asLinear(),
+        HasDescription().asLinear(),
+        HasLocation().asLinear(),
+        HasProfileLocation().asLinear(),
+        HighFollowingToFollowersRatio().asLinear(),
+        LessThan30Followers().asLinear(),
+        LevenshteinDistanceLessThan30().asLinear(),
+        LessThan100Likes().asLinear(),
+        MoreThan50Following().asLinear(),
+        MoreThan100Followers().asLinear(),
+        ProfileUsesBackgroundImage().asLinear(),
+        UserIsVerified().asLinear(),
+        UsesExtendedProfile().asLinear(),
+        UsingDefaultProfile().asLinear(),
+        UsingDefaultProfileImage().asLinear(),
+    )
 
+//    val classifiers = listOf(
+//        kNN( k = 3, features = features),
+//        kNN(k = 5, features = features),
+//        kNN( k = 7, features = features),
+//        kNN(k = 50, features = features),
+//        kNN(k = 100, features = features),
+//        kNN(k = 150, features = features),
+//        kNN(k = 300, features = features)
+//    )
 
-    val classifiers = listOf(kNN( k = 3), kNN(k = 5), kNN( k = 7), kNN(k = 50), kNN(k = 100), kNN(k = 150), kNN(k = 300))
-
-
-    for (c in classifiers) {
-        println(c)
-        val correct = Datasets.dev.data.count { user ->
-            c.classify(user).isBot() == user.isBot()
+    val max : Double = getAllCombos(features).asStream().parallel().map {
+        if (it.isEmpty()){
+            0.0
+        } else{
+            val c = kNN(k = 50, features = it)
+            println(c)
+            val correct = Datasets.dev.data.count { user ->
+                c.classify(user).isBot() == user.isBot()
+            }
+            println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
+            correct.toDouble() / total * 100
         }
-        println("$correct results were correct out of $total (${correct.toDouble()/total * 100}% accuracy)")
-    }
+    }.max(Double::compareTo).get()
+
+    println("Best Percentage found: $max")
 
 
 }
@@ -44,3 +75,21 @@ data class Entry(
     val z: ZipEntry,
     val data: List<User>
 )
+
+fun <T> getAllCombos(input: List<T>) : Sequence<List<T>>{
+    val count : Int = (2.0.pow(input.size)-1).toInt()
+
+    // Sequence evaluates lazily, saves memory
+    return sequence<List<T>> {
+        for (i in 1..count){
+            val result = mutableListOf<T>()
+
+            for (j in 0..input.size){
+                if ((i shr j).mod(2) != 0){
+                    result.add(input[j])
+                }
+            }
+            yield(result)
+        }
+    }
+}

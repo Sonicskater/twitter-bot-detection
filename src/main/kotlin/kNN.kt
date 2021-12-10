@@ -1,22 +1,8 @@
-class kNN(val k : Int = 3, val distance : (Array<Double>, Array<Double>) -> Double = EuclideanDistance) : Classifier{
-
-    val features : List<LinearFeature> = listOf(
-        AgeLessThan2Months().asLinear(),
-        HasDescription().asLinear(),
-        HasLocation().asLinear(),
-        HasProfileLocation().asLinear(),
-        HighFollowingToFollowersRatio().asLinear(),
-        LessThan30Followers().asLinear(),
-        LevenshtienDistanceLessThan30().asLinear(),
-        LessThan100Likes().asLinear(),
-        MoreThan50Following().asLinear(),
-        MoreThan100Followers().asLinear(),
-        ProfileUsesBackgroundImage().asLinear(),
-        UserIsVerified().asLinear(),
-        UsesExtendedProfile().asLinear(),
-        UsingDefaultProfile().asLinear(),
-        UsingDefaultProfileImage().asLinear(),
-    )
+class kNN(
+    val k : Int = 3,
+    val distance : (Array<Double>, Array<Double>) -> Double = EuclideanDistance,
+    val features : List<LinearFeature> = listOf()
+) : Classifier{
 
     private fun extractFeatures(user: User) : Array<Double>{
         return features.map {
