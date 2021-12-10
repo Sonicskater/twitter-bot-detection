@@ -62,24 +62,28 @@ data class Profile(
     val isDefaultProfile = when (default_profile){
         "False " -> false
         "True " -> true
-        else -> throw Exception("????")
+        null -> false
+        else -> throw Exception("default_profile was $default_profile for user $id")
     }
 
     val isDefaultProfileImage = when (default_profile_image){
         "False " -> false
         "True " -> true
-        else -> throw Exception("????")
+        null -> false
+        else -> throw Exception("default_profile_image was $default_profile_image for user $id")
     }
 
     val usesBackgroundImage = when (profile_use_background_image){
         "False " -> false
         "True " -> true
+        null -> false
         else -> throw Exception("????")
     }
 
     val hasExtendedProfile = when (has_extended_profile){
         "False " -> false
         "True " -> true
+        null -> false
         else -> throw Exception("????")
     }
 
