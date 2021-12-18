@@ -1,3 +1,5 @@
+package classifiers
+
 import features.User
 
 interface Classifier {

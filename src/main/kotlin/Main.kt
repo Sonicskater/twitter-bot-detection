@@ -1,3 +1,5 @@
+import classifiers.SVMClassifier
+import classifiers.kNN
 import features.*
 import features.DescHasLink
 import features.jis.HighFollowingToFollowersRatio
@@ -102,27 +104,34 @@ fun main(args: Array<String>) {
     val kernel = GaussianKernel(1.0)
     val SVM = SVMClassifier(kernel,SMUfeatures,Datasets.train.data)
 
-    val correct = Datasets.dev.data.count { user ->
+    val svm_correct = Datasets.dev.data.count { user ->
         SVM.classify(user).isBot() == user.isBot()
     }
-    println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
+    println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
+
+    val JIS_knn = kNN(k = 1, features = JISfeatures, training_data = Datasets.train.data)
+
+    val jis_correct = Datasets.dev.data.count { user ->
+        JIS_knn.classify(user).isBot() == user.isBot()
+    }
+    println("JIS (KNN): $jis_correct results were correct out of $total (${jis_correct.toDouble() / total * 100}% accuracy)")
 
 
 //    val classifiers = listOf(
-//        kNN( k = 3, features = features),
-//        kNN(k = 5, features = features),
-//        kNN( k = 7, features = features),
-//        kNN(k = 50, features = features),
-//        kNN(k = 100, features = features),
-//        kNN(k = 150, features = features),
-//        kNN(k = 300, features = features)
+//        classifiers.kNN( k = 3, features = features),
+//        classifiers.kNN(k = 5, features = features),
+//        classifiers.kNN( k = 7, features = features),
+//        classifiers.kNN(k = 50, features = features),
+//        classifiers.kNN(k = 100, features = features),
+//        classifiers.kNN(k = 150, features = features),
+//        classifiers.kNN(k = 300, features = features)
 //    )
 
 //    val max : Double = getAllCombos(features).asStream().parallel().map {
 //        if (it.isEmpty()){
 //            0.0
 //        } else{
-//            val c = kNN(k = 50, features = it)
+//            val c = classifiers.kNN(k = 50, features = it)
 //            println(c)
 //            val correct = Datasets.dev.data.count { user ->
 //                c.classify(user).isBot() == user.isBot()
