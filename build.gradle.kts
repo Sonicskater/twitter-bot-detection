@@ -13,7 +13,7 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 
-    maven {
+    maven { // Custom repo for fixed json deserializer
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/Sonicskater/twitter-bot-detection")
         credentials {

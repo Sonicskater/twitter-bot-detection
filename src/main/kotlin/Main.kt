@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
         //MISSING: Num Tweets per Day,
         //MISSING: Uses Emoticons,
         //MISSING: Tweets from mobile,
-        //MISSING: Multilingual,
+        IsMultilingual().asLinear(),
         //MISSING: Tweet via PC,
         //MISSING: Use Symbols in name,
         //MISSING: Pictures in tweets,
