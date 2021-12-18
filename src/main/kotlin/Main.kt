@@ -2,10 +2,7 @@ import classifiers.SVMClassifier
 import classifiers.kNN
 import features.*
 import features.DescHasLink
-import features.jis.AgeLessThan2Months
-import features.jis.HighFollowingToFollowersRatio
-import features.jis.MoreThan100Followers
-import features.jis.MoreThan50Following
+import features.jis.*
 import features.smu.LessThan30Followers
 import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -17,13 +14,15 @@ import kotlin.math.pow
 fun main(args: Array<String>) {
     println("Dev Dataset:")
     println("ENTRIES: ${ Datasets.dev.data.size }")
-    println("TWEETS: ${Datasets.dev.data.sumOf { it.tweet?.size ?: 0 } }")
+    println("TWEETS: ${Datasets.dev.data.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.dev.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.dev.data.count { it.isBot() }} ")
 
     println("Train Dataset:")
     println("ENTRIES: ${ Datasets.train.data.size }")
-    println("TWEETS: ${Datasets.train.data.sumOf { it.tweet?.size ?: 0 } }")
+    println("TWEETS: ${Datasets.train.data.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.train.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.train.data.count { it.isBot() }} ")
 
@@ -76,7 +75,7 @@ fun main(args: Array<String>) {
         //MISSING: Videos in Tweets,
         //MISSING: Real Picture,
         //MISSING: Living Place,
-        // MISSING: Retweets more than tweets
+        RetweetsMoreThanTweets().asLinear(),
         LessThan100Likes().asLinear(),
         //MISSING: LINKS TO OTHER SOCIAL MEDIA,
         AgeLessThan2Months().asLinear(),
@@ -113,7 +112,7 @@ fun main(args: Array<String>) {
     }
     println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
 
-    val JIS_knn = kNN(k = 1, features = JISfeatures, training_data = Datasets.train.data)
+    val JIS_knn = kNN(k = 5, features = JISfeatures, training_data = Datasets.train.data)
 
     val jis_correct = Datasets.dev.data.count { user ->
         JIS_knn.classify(user).isBot() == user.isBot()
