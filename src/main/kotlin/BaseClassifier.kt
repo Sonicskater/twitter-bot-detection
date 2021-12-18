@@ -1,3 +1,5 @@
+import features.LinearFeature
+
 abstract class BaseClassifier(
     val features : List<LinearFeature>,
     val training_data: List<User>

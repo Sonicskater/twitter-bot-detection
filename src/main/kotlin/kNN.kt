@@ -1,3 +1,5 @@
+import features.LinearFeature
+
 class kNN(
     val k : Int = 3,
     val distance : (Array<Double>, Array<Double>) -> Double = EuclideanDistance,

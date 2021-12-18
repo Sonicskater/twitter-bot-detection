@@ -1,12 +1,8 @@
+import features.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import smile.classification.SVM
-import smile.classification.svm
 import smile.math.kernel.GaussianKernel
-import smile.math.kernel.LinearKernel
-import smile.math.kernel.MercerKernel
 import java.util.zip.*
 import kotlin.math.pow
-import kotlin.streams.asStream
 
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
