@@ -1,3 +1,5 @@
+package features
+
 import features.BinaryFeature
 import features.LinearFeature
 import features.User

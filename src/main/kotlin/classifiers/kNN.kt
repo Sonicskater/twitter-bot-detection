@@ -1,3 +1,6 @@
+package classifiers
+
+import classifiers.distance.EuclideanDistance
 import features.LinearFeature
 import features.User
 
@@ -21,6 +24,6 @@ class kNN(
         val bots = result.count { (user, _) -> user.isBot() }
         val real = result.count { (user, _) -> !user.isBot() }
 
-        return Classifier.Result(bots.toDouble()/k,real.toDouble()/k)
+        return Classifier.Result(bots.toDouble() / k, real.toDouble() / k)
     }
 }
