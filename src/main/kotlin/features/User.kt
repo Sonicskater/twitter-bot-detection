@@ -4,15 +4,38 @@ import org.apache.commons.text.similarity.LevenshteinDistance
 import java.text.SimpleDateFormat
 import java.util.*
 
+interface Tweet{
+    val text: String
+}
+
+interface Retweet : Tweet{
+
+}
+
+
+private open class ConcreteTweet(
+    override val text: String
+) : Tweet
+
+private class ConcreteRetweet(
+    text: String
+) : ConcreteTweet(text), Retweet
 
 @Serializable
 data class User(
     val ID: String,
     val profile: Profile?,
-    val tweet: List<String>? = null,
+    private val tweet: List<String>? = null,
     val neighbor: Neighbor? = null,
     private val label: Int? = null
 ){
+
+    val tweets: List<Tweet>? by lazy {
+        tweet?.map {
+            ConcreteTweet(it)
+        }
+    }
+
     fun isBot(): Boolean {
         return when(label){
             0 -> false
@@ -21,18 +44,18 @@ data class User(
         }
     }
     val levenshteinDistanceLessThan30: Boolean by lazy{
-        if (this.tweet == null) {
+        if (this.tweets == null) {
             true
         } else {
             val l = LevenshteinDistance(30)
-            this.tweet
+            this.tweets!!
                 // cross product
                 .flatMap { a ->
-                    this.tweet.map { b-> a to b  }
+                    this.tweets!!.map { b-> a to b  }
                 }
                 .parallelStream()
                 .allMatch { (a,b) ->
-                    l.apply(a,b) >= 0
+                    l.apply(a.text,b.text) >= 0
                 }
         }
     }
