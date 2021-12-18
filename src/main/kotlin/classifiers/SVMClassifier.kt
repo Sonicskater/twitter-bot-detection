@@ -1,3 +1,6 @@
+package classifiers
+
+import Datasets
 import features.LinearFeature
 import features.User
 import smile.classification.svm

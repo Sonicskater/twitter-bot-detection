@@ -1,8 +1,11 @@
+import classifiers.SVMClassifier
+import classifiers.kNN
 import features.*
 import features.smu.*
 import features.DescHasLink
-import features.jis.HighFollowingToFollowersRatio
+import features.jis.*
 import features.smu.LessThan30Followers
+import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
 import smile.math.kernel.GaussianKernel
 import java.util.zip.*
@@ -12,13 +15,15 @@ import kotlin.math.pow
 fun main(args: Array<String>) {
     println("Dev Dataset:")
     println("ENTRIES: ${ Datasets.dev.data.size }")
-    println("TWEETS: ${Datasets.dev.data.sumOf { it.tweet?.size ?: 0 } }")
+    println("TWEETS: ${Datasets.dev.data.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.dev.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.dev.data.count { it.isBot() }} ")
 
     println("Train Dataset:")
     println("ENTRIES: ${ Datasets.train.data.size }")
-    println("TWEETS: ${Datasets.train.data.sumOf { it.tweet?.size ?: 0 } }")
+    println("TWEETS: ${Datasets.train.data.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.train.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.train.data.count { it.isBot() }} ")
 
@@ -71,7 +76,7 @@ fun main(args: Array<String>) {
         //MISSING: Videos in Tweets,
         //MISSING: Real Picture,
         //MISSING: Living Place,
-        // MISSING: Retweets more than tweets
+        RetweetsMoreThanTweets().asLinear(),
         LessThan100Likes().asLinear(),
         //MISSING: LINKS TO OTHER SOCIAL MEDIA,
         AgeLessThan2Months().asLinear(),
@@ -102,27 +107,34 @@ fun main(args: Array<String>) {
     val kernel = GaussianKernel(1.0)
     val SVM = SVMClassifier(kernel,SMUfeatures,Datasets.train.data)
 
-    val correct = Datasets.dev.data.count { user ->
+    val svm_correct = Datasets.dev.data.count { user ->
         SVM.classify(user).isBot() == user.isBot()
     }
-    println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
+    println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
+
+    val JIS_knn = kNN(k = 5, features = JISfeatures, training_data = Datasets.train.data)
+
+    val jis_correct = Datasets.dev.data.count { user ->
+        JIS_knn.classify(user).isBot() == user.isBot()
+    }
+    println("JIS (KNN): $jis_correct results were correct out of $total (${jis_correct.toDouble() / total * 100}% accuracy)")
 
 
 //    val classifiers = listOf(
-//        kNN( k = 3, features = features),
-//        kNN(k = 5, features = features),
-//        kNN( k = 7, features = features),
-//        kNN(k = 50, features = features),
-//        kNN(k = 100, features = features),
-//        kNN(k = 150, features = features),
-//        kNN(k = 300, features = features)
+//        classifiers.kNN( k = 3, features = features),
+//        classifiers.kNN(k = 5, features = features),
+//        classifiers.kNN( k = 7, features = features),
+//        classifiers.kNN(k = 50, features = features),
+//        classifiers.kNN(k = 100, features = features),
+//        classifiers.kNN(k = 150, features = features),
+//        classifiers.kNN(k = 300, features = features)
 //    )
 
 //    val max : Double = getAllCombos(features).asStream().parallel().map {
 //        if (it.isEmpty()){
 //            0.0
 //        } else{
-//            val c = kNN(k = 50, features = it)
+//            val c = classifiers.kNN(k = 50, features = it)
 //            println(c)
 //            val correct = Datasets.dev.data.count { user ->
 //                c.classify(user).isBot() == user.isBot()
