@@ -6,20 +6,22 @@ import java.util.*
 
 interface Tweet{
     val text: String
+    val hasImage: Boolean
 }
 
 interface Retweet : Tweet{
-
+    val user: String
 }
 
 
 private open class ConcreteTweet(
-    override val text: String
+    override val text: String, override val hasImage: Boolean
 ) : Tweet
 
 private class ConcreteRetweet(
-    text: String
-) : ConcreteTweet(text), Retweet
+    override val user: String,
+    text: String, hasImage: Boolean
+) : ConcreteTweet(text, hasImage), Retweet
 
 @Serializable
 data class User(
@@ -30,9 +32,21 @@ data class User(
     private val label: Int? = null
 ){
 
+    @Transient
+    private val retweetRegex = Regex("RT @[a-zA-Z0-9]*:")
+
     val tweets: List<Tweet>? by lazy {
         tweet?.map {
-            ConcreteTweet(it)
+
+            val hasImage = false
+
+            val name = retweetRegex.find(it)
+
+            if (name != null){
+                ConcreteRetweet(name.value,it,false)
+            } else {
+                ConcreteTweet(it, false)
+            }
         }
     }
 

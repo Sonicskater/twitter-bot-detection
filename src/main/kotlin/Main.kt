@@ -18,12 +18,14 @@ fun main(args: Array<String>) {
     println("Dev Dataset:")
     println("ENTRIES: ${ Datasets.dev.data.size }")
     println("TWEETS: ${Datasets.dev.data.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.dev.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.dev.data.count { it.isBot() }} ")
 
     println("Train Dataset:")
     println("ENTRIES: ${ Datasets.train.data.size }")
     println("TWEETS: ${Datasets.train.data.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.train.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.train.data.count { it.isBot() }} ")
 
