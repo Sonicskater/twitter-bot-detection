@@ -1,4 +1,5 @@
 import features.*
+import features.smu.*
 import features.DescHasLink
 import features.jis.HighFollowingToFollowersRatio
 import features.smu.LessThan30Followers
@@ -81,20 +82,19 @@ fun main(args: Array<String>) {
 
     //https://scholar.smu.edu/cgi/viewcontent.cgi?article=1019&context=datasciencereview
     val SMUfeatures = listOf(
-        // MISSING: Absence of ID
-        // MISSING: No profile picture ,
-        //MISSING: HAS SCREEN NAME
+        MissingID().asLinear(),
+        UsingDefaultProfileImage().asLinear(),
+        HasScreenName().asLinear(),
         LessThan30Followers().asLinear(),
         HasLocation().asLinear(),
-        //MISSING: LANG NOT ENG
         DescHasLink().asLinear(),
-        // MISSING: LESS THAN 50 TWEETS,
-        // MISSING 2:1 friends/followers,
-        // MISSING: Over 1k followers,
+        LessThan50Tweets().asLinear(),
+        TwoToOneFriendsToFollowers().asLinear(),
+        MoreThan1kFollowers().asLinear(),
         UsingDefaultProfileImage().asLinear(),
-        // MISSING: Has Never Tweeted,
-        // MISSING 50:1 freinds:followers
-        // MISSING 100:1 freinds:followers
+        HasNeverTweeted().asLinear(),
+        FiftyToOneFriendsToFollowers().asLinear(),
+        OneHundredToOneFriendsToFollowers().asLinear(),
         HasDescription().asLinear(),
         LevenshteinDistanceLessThan30().asLinear(),
     )
