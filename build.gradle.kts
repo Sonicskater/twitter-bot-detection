@@ -28,7 +28,8 @@ dependencies {
     implementation("org.apache.commons:commons-text:1.9")
     implementation("org.apache.commons:commons-math3:3.6.1")
 
-    implementation("com.github.haifengl:smile-kotlin:2.6.0")
+    implementation("com.github.haifengl:smile-kotlin:2.6.0") // Natural Language Processing
+    implementation("com.github.pemistahl:lingua:1.1.1") // Text Language detection lib
 }
 
 
