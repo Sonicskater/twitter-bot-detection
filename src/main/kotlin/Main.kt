@@ -42,31 +42,38 @@ fun main(args: Array<String>) {
         UsingDefaultProfileImage().asLinear(),
     )
 
-//    val classifiers = listOf(
-//        kNN( k = 3, features = features),
-//        kNN(k = 5, features = features),
-//        kNN( k = 7, features = features),
-//        kNN(k = 50, features = features),
-//        kNN(k = 100, features = features),
-//        kNN(k = 150, features = features),
-//        kNN(k = 300, features = features)
-//    )
+    val classifiers = listOf(
+        kNN( k = 3, features = features),
+        kNN(k = 5, features = features),
+        kNN( k = 7, features = features),
+        kNN(k = 50, features = features),
+        kNN(k = 100, features = features),
+        kNN(k = 150, features = features),
+        kNN(k = 300, features = features)
+    )
 
-    val max : Double = getAllCombos(features).asStream().parallel().map {
-        if (it.isEmpty()){
-            0.0
-        } else{
-            val c = kNN(k = 50, features = it)
-            println(c)
-            val correct = Datasets.dev.data.count { user ->
-                c.classify(user).isBot() == user.isBot()
-            }
-            println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
-            correct.toDouble() / total * 100
+    for (c in classifiers) {
+        val correct = Datasets.dev.data.count { user ->
+            c.classify(user).isBot() == user.isBot()
         }
-    }.max(Double::compareTo).get()
+        println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
+    }
 
-    println("Best Percentage found: $max")
+//    val max : Double = getAllCombos(features).asStream().parallel().map {
+//        if (it.isEmpty()){
+//            0.0
+//        } else{
+//            val c = kNN(k = 50, features = it)
+//            println(c)
+//            val correct = Datasets.dev.data.count { user ->
+//                c.classify(user).isBot() == user.isBot()
+//            }
+//            println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
+//            correct.toDouble() / total * 100
+//        }
+//    }.max(Double::compareTo).get()
+//
+//    println("Best Percentage found: $max")
 
 
 }
