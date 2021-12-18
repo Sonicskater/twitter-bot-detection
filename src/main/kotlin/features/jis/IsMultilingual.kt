@@ -10,11 +10,11 @@ class IsMultilingual : BinaryFeature {
     val detector = LanguageDetectorBuilder.fromLanguages(Language.ENGLISH, Language.HINDI, Language.RUSSIAN, Language.SPANISH, Language.FRENCH, Language.GERMAN).build()
 
     override fun hasFeature(user: User): Boolean {
-        val langs = user.tweets?.map {
-            detector.detectLanguageOf(it.text)
-        }
-        val first = langs?.first()
+        val firstTweet=user.tweets?.first() ?: return false
+        val first = detector.detectLanguageOf(firstTweet.text)
 
-        return langs?.any { it != first } ?: false
+        val checker = LanguageDetectorBuilder.fromLanguages(first, Language.LATIN).build()
+
+        return user.tweets?.any { checker.detectLanguageOf(it.text) != first } ?: false
     }
 }
