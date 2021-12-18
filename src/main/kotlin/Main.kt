@@ -2,8 +2,12 @@ import classifiers.SVMClassifier
 import classifiers.kNN
 import features.*
 import features.DescHasLink
+import features.jis.AgeLessThan2Months
 import features.jis.HighFollowingToFollowersRatio
+import features.jis.MoreThan100Followers
+import features.jis.MoreThan50Following
 import features.smu.LessThan30Followers
+import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
 import smile.math.kernel.GaussianKernel
 import java.util.zip.*
