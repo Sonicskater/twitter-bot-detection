@@ -1,3 +1,5 @@
+package features
+
 import org.apache.commons.text.similarity.LevenshteinDistance
 
 class LevenshteinDistanceLessThan30 : BinaryFeature{

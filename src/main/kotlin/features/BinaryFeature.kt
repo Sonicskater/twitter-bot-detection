@@ -1,7 +1,5 @@
 package features
 
-import User
-
 public interface BinaryFeature {
     fun hasFeature(user: User) : Boolean
 }

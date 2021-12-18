@@ -1,4 +1,7 @@
 import features.*
+import features.DescHasLink
+import features.jis.HighFollowingToFollowersRatio
+import features.smu.LessThan30Followers
 import kotlinx.serialization.ExperimentalSerializationApi
 import smile.math.kernel.GaussianKernel
 import java.util.zip.*
@@ -63,7 +66,7 @@ fun main(args: Array<String>) {
         //MISSING: Pictures in tweets,
         //MISSING: Useres Numbers in name,
         //MISSING: Uses #Hashtag,
-        //MISSING: URL in Desc,
+        DescHasLink().asLinear(),
         //MISSING: Videos in Tweets,
         //MISSING: Real Picture,
         //MISSING: Living Place,
@@ -84,7 +87,7 @@ fun main(args: Array<String>) {
         LessThan30Followers().asLinear(),
         HasLocation().asLinear(),
         //MISSING: LANG NOT ENG
-        //MISSING: DESC HAS LINK,
+        DescHasLink().asLinear(),
         // MISSING: LESS THAN 50 TWEETS,
         // MISSING 2:1 friends/followers,
         // MISSING: Over 1k followers,

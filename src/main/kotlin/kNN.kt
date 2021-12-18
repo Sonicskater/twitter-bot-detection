@@ -1,4 +1,5 @@
 import features.LinearFeature
+import features.User
 
 class kNN(
     val k : Int = 3,

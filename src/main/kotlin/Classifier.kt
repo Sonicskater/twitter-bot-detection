@@ -1,3 +1,5 @@
+import features.User
+
 interface Classifier {
 
     fun classify(user: User) : Result

@@ -1,4 +1,4 @@
-package features.smu;
+package features;
 
 import features.BinaryFeature;
 import features.User;

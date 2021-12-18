@@ -1,4 +1,5 @@
 import features.LinearFeature
+import features.User
 import smile.classification.svm
 import smile.math.kernel.MercerKernel
 
