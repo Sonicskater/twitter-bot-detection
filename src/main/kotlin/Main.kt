@@ -1,7 +1,17 @@
+import classifiers.SVMClassifier
+import classifiers.kNN
+import features.*
+import features.DescHasLink
+import features.jis.AgeLessThan2Months
+import features.jis.HighFollowingToFollowersRatio
+import features.jis.MoreThan100Followers
+import features.jis.MoreThan50Following
+import features.smu.LessThan30Followers
+import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
+import smile.math.kernel.GaussianKernel
 import java.util.zip.*
 import kotlin.math.pow
-import kotlin.streams.asStream
 
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
@@ -42,28 +52,90 @@ fun main(args: Array<String>) {
         UsingDefaultProfileImage().asLinear(),
     )
 
-    val classifiers = listOf(
-        kNN( k = 3, features = features),
-        kNN(k = 5, features = features),
-        kNN( k = 7, features = features),
-        kNN(k = 50, features = features),
-        kNN(k = 100, features = features),
-        kNN(k = 150, features = features),
-        kNN(k = 300, features = features)
+    // https://www.researchgate.net/profile/Ala-Al-Zoubi/publication/335026858_Spam_profiles_detection_on_social_networks_using_computational_intelligence_methods_The_effect_of_the_lingual_context/links/5d650bfd458515d610276579/Spam-profiles-detection-on-social-networks-using-computational-intelligence-methods-The-effect-of-the-lingual-context.pdf
+    val JISfeatures = listOf(
+        // MISSING: SUS WORDS
+        HighFollowingToFollowersRatio().asLinear(),
+        UsingDefaultProfileImage().asLinear(),
+        //MISSING: high Text-to-links ratio,
+        //MISSING: Repeated Words,
+        //MISSING: Comments Ratio,
+        //MISSING: Tweet Time Pattern,
+        //MISSING: Follwing Interest vs Tweets,
+        //MISSING: Description vs Tweets,
+        //MISSING: Num Tweets per Day,
+        //MISSING: Uses Emoticons,
+        //MISSING: Tweets from mobile,
+        //MISSING: Multilingual,
+        //MISSING: Tweet via PC,
+        //MISSING: Use Symbols in name,
+        //MISSING: Pictures in tweets,
+        //MISSING: Useres Numbers in name,
+        //MISSING: Uses #Hashtag,
+        DescHasLink().asLinear(),
+        //MISSING: Videos in Tweets,
+        //MISSING: Real Picture,
+        //MISSING: Living Place,
+        // MISSING: Retweets more than tweets
+        LessThan100Likes().asLinear(),
+        //MISSING: LINKS TO OTHER SOCIAL MEDIA,
+        AgeLessThan2Months().asLinear(),
+        MoreThan100Followers().asLinear(),
+        //MISSING: Trending Topics,
+        MoreThan50Following().asLinear()
     )
 
-    for (c in classifiers) {
-        val correct = Datasets.dev.data.count { user ->
-            c.classify(user).isBot() == user.isBot()
-        }
-        println("$correct results were correct out of $total (${correct.toDouble() / total * 100}% accuracy)")
+    //https://scholar.smu.edu/cgi/viewcontent.cgi?article=1019&context=datasciencereview
+    val SMUfeatures = listOf(
+        // MISSING: Absence of ID
+        // MISSING: No profile picture ,
+        //MISSING: HAS SCREEN NAME
+        LessThan30Followers().asLinear(),
+        HasLocation().asLinear(),
+        //MISSING: LANG NOT ENG
+        DescHasLink().asLinear(),
+        // MISSING: LESS THAN 50 TWEETS,
+        // MISSING 2:1 friends/followers,
+        // MISSING: Over 1k followers,
+        UsingDefaultProfileImage().asLinear(),
+        // MISSING: Has Never Tweeted,
+        // MISSING 50:1 freinds:followers
+        // MISSING 100:1 freinds:followers
+        HasDescription().asLinear(),
+        LevenshteinDistanceLessThan30().asLinear(),
+    )
+
+    val kernel = GaussianKernel(1.0)
+    val SVM = SVMClassifier(kernel,SMUfeatures,Datasets.train.data)
+
+    val svm_correct = Datasets.dev.data.count { user ->
+        SVM.classify(user).isBot() == user.isBot()
     }
+    println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
+
+    val JIS_knn = kNN(k = 1, features = JISfeatures, training_data = Datasets.train.data)
+
+    val jis_correct = Datasets.dev.data.count { user ->
+        JIS_knn.classify(user).isBot() == user.isBot()
+    }
+    println("JIS (KNN): $jis_correct results were correct out of $total (${jis_correct.toDouble() / total * 100}% accuracy)")
+
+
+//    val classifiers = listOf(
+//        classifiers.kNN( k = 3, features = features),
+//        classifiers.kNN(k = 5, features = features),
+//        classifiers.kNN( k = 7, features = features),
+//        classifiers.kNN(k = 50, features = features),
+//        classifiers.kNN(k = 100, features = features),
+//        classifiers.kNN(k = 150, features = features),
+//        classifiers.kNN(k = 300, features = features)
+//    )
 
 //    val max : Double = getAllCombos(features).asStream().parallel().map {
 //        if (it.isEmpty()){
 //            0.0
 //        } else{
-//            val c = kNN(k = 50, features = it)
+//            val c = classifiers.kNN(k = 50, features = it)
 //            println(c)
 //            val correct = Datasets.dev.data.count { user ->
 //                c.classify(user).isBot() == user.isBot()

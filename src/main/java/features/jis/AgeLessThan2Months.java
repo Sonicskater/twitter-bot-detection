@@ -1,3 +1,8 @@
+package features.jis;
+
+import features.BinaryFeature;
+import features.Profile;
+import features.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

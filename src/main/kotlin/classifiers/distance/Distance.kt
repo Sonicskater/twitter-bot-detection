@@ -1,3 +1,5 @@
+package classifiers.distance
+
 interface Distance<T> : (Array<T>, Array<T>) -> Double {
     fun distance(a : Array<T>, b : Array<T>) : Double
 

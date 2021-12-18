@@ -1,3 +1,4 @@
+import features.User
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.util.zip.ZipFile

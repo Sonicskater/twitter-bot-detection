@@ -1,11 +1,13 @@
+package features;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class HasProfileLocation implements BinaryFeature {
+public class UserIsVerified implements BinaryFeature {
 
     @Override
     public boolean hasFeature(@NotNull User user) {
-        return Objects.requireNonNull(user.getProfile()).getHasProfileLocation();
+        return Objects.requireNonNull(user.getProfile()).isVerified();
     }
 }
