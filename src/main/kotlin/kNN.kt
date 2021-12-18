@@ -1,24 +1,15 @@
+import features.LinearFeature
+import features.User
+
 class kNN(
     val k : Int = 3,
     val distance : (Array<Double>, Array<Double>) -> Double = EuclideanDistance,
-    val features : List<LinearFeature> = listOf()
-) : Classifier{
-
-    private fun extractFeatures(user: User) : Array<Double>{
-        return features.map {
-            it.hasFeature(user).toDouble()
-        }
-            .toTypedArray()
-    }
-
-    val knownFeatures = Datasets.train.data.map { user ->
-        user to extractFeatures(user)
-    }
+    training_data: List<User>,
+    features : List<LinearFeature>
+) : BaseClassifier(features, training_data) {
 
     override fun classify(user: User): Classifier.Result {
         val userFeatures = extractFeatures(user)
-
-        //println(userFeatures.toList())
 
         val distances = knownFeatures.map { (user, features) ->
 
