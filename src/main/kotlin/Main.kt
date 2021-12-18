@@ -104,13 +104,20 @@ fun main(args: Array<String>) {
         LevenshteinDistanceLessThan30().asLinear(),
     )
 
-    val kernel = GaussianKernel(1.0)
-    val SVM = SVMClassifier(kernel,SMUfeatures,Datasets.train.data)
+    val kernel = GaussianKernel(1.0/features.size)
+    val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train.data)
 
     val svm_correct = Datasets.dev.data.count { user ->
         SVM.classify(user).isBot() == user.isBot()
     }
     println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
+
+    val SVM_knn = kNN(k = 5, features = SMUfeatures, training_data = Datasets.train.data)
+
+    val svm_KNN_correct = Datasets.dev.data.count { user ->
+        SVM_knn.classify(user).isBot() == user.isBot()
+    }
+    println("SMU (KNN): $svm_KNN_correct results were correct out of $total (${svm_KNN_correct.toDouble() / total * 100}% accuracy)")
 
     val JIS_knn = kNN(k = 5, features = JISfeatures, training_data = Datasets.train.data)
 
@@ -118,6 +125,13 @@ fun main(args: Array<String>) {
         JIS_knn.classify(user).isBot() == user.isBot()
     }
     println("JIS (KNN): $jis_correct results were correct out of $total (${jis_correct.toDouble() / total * 100}% accuracy)")
+
+    val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train.data)
+
+    val jis_svm_correct = Datasets.dev.data.count { user ->
+        JIS_svm.classify(user).isBot() == user.isBot()
+    }
+    println("JIS (SVM): $jis_svm_correct results were correct out of $total (${jis_svm_correct.toDouble() / total * 100}% accuracy)")
 
 
 //    val classifiers = listOf(
