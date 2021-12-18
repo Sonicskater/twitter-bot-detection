@@ -47,6 +47,39 @@ fun main(args: Array<String>) {
         UsingDefaultProfileImage().asLinear(),
     )
 
+    // https://www.researchgate.net/profile/Ala-Al-Zoubi/publication/335026858_Spam_profiles_detection_on_social_networks_using_computational_intelligence_methods_The_effect_of_the_lingual_context/links/5d650bfd458515d610276579/Spam-profiles-detection-on-social-networks-using-computational-intelligence-methods-The-effect-of-the-lingual-context.pdf
+    val JISfeatures = listOf(
+        // MISSING: SUS WORDS
+        HighFollowingToFollowersRatio().asLinear(),
+        UsingDefaultProfileImage().asLinear(),
+        //MISSING: high Text-to-links ratio,
+        //MISSING: Repeated Words,
+        //MISSING: Comments Ratio,
+        //MISSING: Tweet Time Pattern,
+        //MISSING: Follwing Interest vs Tweets,
+        //MISSING: Description vs Tweets,
+        //MISSING: Num Tweets per Day,
+        //MISSING: Uses Emoticons,
+        //MISSING: Tweets from mobile,
+        //MISSING: Multilingual,
+        //MISSING: Tweet via PC,
+        //MISSING: Use Symbols in name,
+        //MISSING: Pictures in tweets,
+        //MISSING: Useres Numbers in name,
+        //MISSING: Uses #Hashtag,
+        //MISSING: URL in Desc,
+        //MISSING: Videos in Tweets,
+        //MISSING: Real Picture,
+        //MISSING: Living Place,
+        // MISSING: Retweets more than tweets
+        LessThan100Likes().asLinear(),
+        //MISSING: LINKS TO OTHER SOCIAL MEDIA,
+        AgeLessThan2Months().asLinear(),
+        MoreThan100Followers().asLinear(),
+        //MISSING: Trending Topics,
+        MoreThan50Following().asLinear()
+    )
+
     //https://scholar.smu.edu/cgi/viewcontent.cgi?article=1019&context=datasciencereview
     val SMUfeatures = listOf(
         // MISSING: Absence of ID
