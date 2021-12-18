@@ -43,9 +43,9 @@ data class User(
             val name = retweetRegex.find(it)
 
             if (name != null){
-                ConcreteRetweet(name.value,it,false)
+                ConcreteRetweet(name.value,it,hasImage)
             } else {
-                ConcreteTweet(it, false)
+                ConcreteTweet(it, hasImage)
             }
         }
     }

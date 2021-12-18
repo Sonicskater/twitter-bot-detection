@@ -2,10 +2,7 @@ import classifiers.SVMClassifier
 import classifiers.kNN
 import features.*
 import features.DescHasLink
-import features.jis.AgeLessThan2Months
-import features.jis.HighFollowingToFollowersRatio
-import features.jis.MoreThan100Followers
-import features.jis.MoreThan50Following
+import features.jis.*
 import features.smu.LessThan30Followers
 import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -78,7 +75,7 @@ fun main(args: Array<String>) {
         //MISSING: Videos in Tweets,
         //MISSING: Real Picture,
         //MISSING: Living Place,
-        // MISSING: Retweets more than tweets
+        RetweetsMoreThanTweets().asLinear(),
         LessThan100Likes().asLinear(),
         //MISSING: LINKS TO OTHER SOCIAL MEDIA,
         AgeLessThan2Months().asLinear(),
