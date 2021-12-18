@@ -112,7 +112,7 @@ fun main(args: Array<String>) {
     }
     println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
 
-    val JIS_knn = kNN(k = 1, features = JISfeatures, training_data = Datasets.train.data)
+    val JIS_knn = kNN(k = 5, features = JISfeatures, training_data = Datasets.train.data)
 
     val jis_correct = Datasets.dev.data.count { user ->
         JIS_knn.classify(user).isBot() == user.isBot()
