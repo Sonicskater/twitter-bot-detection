@@ -67,7 +67,7 @@ fun main(args: Array<String>) {
         //MISSING: Num Tweets per Day,
         //MISSING: Uses Emoticons,
         //MISSING: Tweets from mobile,
-        //MISSING: Multilingual,
+        IsMultilingual().asLinear(), // WARNING: EXTREMELY PERFORMANCE AND MEMORY INTENSIVE!
         //MISSING: Tweet via PC,
         //MISSING: Use Symbols in name,
         NameContainsSymbols().asLinear(),
@@ -111,14 +111,15 @@ fun main(args: Array<String>) {
     val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train.data)
     val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train.data)
     val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
-    val experiments = listOf(
-        runExperiment("SMU (SVM)",SVM,Datasets.dev.data),
-        runExperiment("SMU (KNN)",SVM_knn,Datasets.dev.data),
-        runExperiment("JIS (KNN)",JIS_knn,Datasets.dev.data),
-        runExperiment("JIS (SVM)",JIS_svm,Datasets.dev.data),
+    val experiments = sequenceOf(
+        {runExperiment("SMU (SVM)",SVM,Datasets.dev.data)},
+        {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev.data)},
+        {runExperiment("JIS (KNN)",JIS_knn,Datasets.dev.data)},
+        {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev.data)},
     )
 
-    for (e in experiments){
+    experiments.forEach {
+        val e = it()
         println("${e.name}: ${e.accuracy*100}% accuracy | ${e.falsePositivePercent*100}% false positives | ${e.falseNegativePercent*100}% false negatives")
     }
 

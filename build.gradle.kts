@@ -13,7 +13,7 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 
-    maven {
+    maven { // Custom repo for fixed json deserializer
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/Sonicskater/twitter-bot-detection")
         credentials {
@@ -28,7 +28,8 @@ dependencies {
     implementation("org.apache.commons:commons-text:1.9")
     implementation("org.apache.commons:commons-math3:3.6.1")
 
-    implementation("com.github.haifengl:smile-kotlin:2.6.0")
+    implementation("com.github.haifengl:smile-kotlin:2.6.0") // Natural Language Processing
+    implementation("com.github.pemistahl:lingua:1.1.1") // Text Language detection lib
 }
 
 
@@ -37,7 +38,7 @@ tasks.withType<KotlinCompile>() {
 }
 
 tasks.withType<JavaExec>(){
-    jvmArgs = listOf("-Xms8g","-Xmx8g")
+    jvmArgs = listOf("-Xms12g","-Xmx12g")
 }
 
 application {
