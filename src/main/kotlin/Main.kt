@@ -114,7 +114,7 @@ fun main(args: Array<String>) {
 
     val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
 
-    val jis_correct = Datasets.dev.data.parallelStream().mapToInt { user->
+    val jis_correct = Datasets.dev.data.map { user->
         if (JIS_knn.classify(user).isBot() == user.isBot()){
             1
         } else {

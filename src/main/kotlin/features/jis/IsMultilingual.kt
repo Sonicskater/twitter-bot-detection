@@ -1,6 +1,7 @@
 package features.jis
 
 import com.github.pemistahl.lingua.api.Language
+import com.github.pemistahl.lingua.api.LanguageDetector
 import com.github.pemistahl.lingua.api.LanguageDetectorBuilder
 import features.BinaryFeature
 import features.User
@@ -8,7 +9,9 @@ import smile.nlp.normalizer.SimpleNormalizer
 
 class IsMultilingual : BinaryFeature {
 
-    val detector = LanguageDetectorBuilder.fromAllLanguagesWithLatinScript().build()
+    val langs: MutableMap<Language,LanguageDetector> = mutableMapOf()
+
+    val detector = LanguageDetectorBuilder.fromAllSpokenLanguages().build()
 
     val normalizer = SimpleNormalizer.getInstance()
 
@@ -18,17 +21,24 @@ class IsMultilingual : BinaryFeature {
             normalizer.normalize(it.text) // Normalize tweet text
         } ?: return false
 
-        val tweetLang = data.map {
-            val x = detector.detectLanguageOf(it)
-            println("Detected Language: ${x.name}")
-            x
-        }.firstOrNull { lang ->
-            lang != Language.UNKNOWN
-        } ?: return false
+        val tweetLang = data
+            // makes mapping lazy, to speed up the program and prevent running expensive
+            // all lang check on every single tweet
+            .asSequence()
+            .map {
+                val x = detector.detectLanguageOf(it)
+                println("Detected Language: ${x.name}")
+                x
+            }.firstOrNull { lang ->
+                lang != Language.UNKNOWN
+            } ?: return false
 
         println("Locked Language: ${tweetLang.name}")
 
-        val lockedOn = LanguageDetectorBuilder.fromLanguages(tweetLang, Language.UNKNOWN).build()
+        // cache the detectors to prevent huge memory pressure
+        val lockedOn = langs.getOrPut(tweetLang){
+            LanguageDetectorBuilder.fromLanguages(tweetLang, Language.UNKNOWN, Language.LATIN).build()
+        }
 
         return data.any {
             lockedOn.detectLanguageOf(it) != tweetLang
