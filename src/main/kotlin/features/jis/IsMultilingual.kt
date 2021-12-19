@@ -27,19 +27,19 @@ class IsMultilingual : BinaryFeature {
             .asSequence()
             .map {
                 val x = detector.detectLanguageOf(it)
-                println("Detected Language: ${x.name}")
+                //println("Detected Language: ${x.name}")
                 x
             }.firstOrNull { lang ->
                 lang != Language.UNKNOWN
             } ?: return false
 
-        println("Locked Language: ${tweetLang.name}")
+        //println("Locked Language: ${tweetLang.name}")
 
         // cache the detectors to prevent huge memory pressure
-        val lockedOn = langs.getOrPut(tweetLang){
-            LanguageDetectorBuilder.fromLanguages(tweetLang, Language.UNKNOWN, Language.LATIN).build()
-        }
-
+//        val lockedOn = langs.getOrPut(tweetLang){
+//            LanguageDetectorBuilder.fromLanguages(tweetLang, Language.UNKNOWN, Language.LATIN).build()
+//        }
+        val lockedOn = detector
         return data.any {
             lockedOn.detectLanguageOf(it) != tweetLang
         }
