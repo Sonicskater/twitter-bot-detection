@@ -4,15 +4,52 @@ import org.apache.commons.text.similarity.LevenshteinDistance
 import java.text.SimpleDateFormat
 import java.util.*
 
+interface Tweet{
+    val text: String
+    val hasImage: Boolean
+}
+
+interface Retweet : Tweet{
+    val user: String
+}
+
+
+private open class ConcreteTweet(
+    override val text: String, override val hasImage: Boolean
+) : Tweet
+
+private class ConcreteRetweet(
+    override val user: String,
+    text: String, hasImage: Boolean
+) : ConcreteTweet(text, hasImage), Retweet
 
 @Serializable
 data class User(
     val ID: String,
     val profile: Profile?,
-    val tweet: List<String>? = null,
+    private val tweet: List<String>? = null,
     val neighbor: Neighbor? = null,
     private val label: Int? = null
 ){
+
+    @Transient
+    private val retweetRegex = Regex("RT @[a-zA-Z0-9]*:")
+
+    val tweets: List<Tweet>? by lazy {
+        tweet?.map {
+
+            val hasImage = false
+
+            val name = retweetRegex.find(it)
+
+            if (name != null){
+                ConcreteRetweet(name.value,it.substringAfter(name.value),hasImage)
+            } else {
+                ConcreteTweet(it, hasImage)
+            }
+        }
+    }
+
     fun isBot(): Boolean {
         return when(label){
             0 -> false
@@ -21,18 +58,18 @@ data class User(
         }
     }
     val levenshteinDistanceLessThan30: Boolean by lazy{
-        if (this.tweet == null) {
+        if (this.tweets == null) {
             true
         } else {
             val l = LevenshteinDistance(30)
-            this.tweet
+            this.tweets!!
                 // cross product
                 .flatMap { a ->
-                    this.tweet.map { b-> a to b  }
+                    this.tweets!!.map { b-> a to b  }
                 }
                 .parallelStream()
                 .allMatch { (a,b) ->
-                    l.apply(a,b) >= 0
+                    l.apply(a.text,b.text) >= 0
                 }
         }
     }
@@ -64,12 +101,14 @@ data class Profile(
     val default_profile_image: String?,
     val profile_use_background_image: String?,
     val has_extended_profile: String?,
-    val profile_location: String?
+    val profile_location: String?,
+    val statuses_count: String?
 ){
     @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
     val following: Int = friends_count?.trim()?.toInt() ?: 0
     val likes: Int = favourites_count?.trim()?.toInt() ?: 0
+    val tweets: Int = statuses_count?.trim()?.toInt() ?: 0
 
     val isVerified = when (verified){
         "False " -> false
@@ -118,6 +157,18 @@ data class Profile(
 
     val hasDescription = when (description){
         " " -> false
+        else -> true
+    }
+
+    val hasScreenName = when(screen_name){
+        " " -> false
+        "None " -> false
+        else -> true
+    }
+
+    val hasID = when(id){
+        " " -> false
+        "None " -> false
         else -> true
     }
 
