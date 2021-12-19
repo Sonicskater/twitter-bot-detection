@@ -68,7 +68,6 @@ fun main(args: Array<String>) {
         //MISSING: Tweets from mobile,
         //MISSING: Multilingual,
         //MISSING: Tweet via PC,
-        //MISSING: Use Symbols in name,
         NameContainsSymbols().asLinear(),
         //MISSING: Pictures in tweets,
         NameContainsNumbers().asLinear(),
