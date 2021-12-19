@@ -1,3 +1,4 @@
+import classifiers.Classifier
 import classifiers.SVMClassifier
 import classifiers.kNN
 import features.*
@@ -66,7 +67,7 @@ fun main(args: Array<String>) {
         //MISSING: Num Tweets per Day,
         //MISSING: Uses Emoticons,
         //MISSING: Tweets from mobile,
-        //MISSING: Multilingual,
+        IsMultilingual().asLinear(), // WARNING: EXTREMELY PERFORMANCE AND MEMORY INTENSIVE!
         //MISSING: Tweet via PC,
         NameContainsSymbols().asLinear(),
         //MISSING: Pictures in tweets,
@@ -104,21 +105,22 @@ fun main(args: Array<String>) {
         LevenshteinDistanceLessThan30().asLinear(),
     )
 
-    val kernel = GaussianKernel(1.0)
-    val SVM = SVMClassifier(kernel,SMUfeatures,Datasets.train.data)
+    val kernel = GaussianKernel(1.0/features.size)
+    val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train.data)
+    val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train.data)
+    val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train.data)
+    val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
+    val experiments = sequenceOf(
+        {runExperiment("SMU (SVM)",SVM,Datasets.dev.data)},
+        {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev.data)},
+        {runExperiment("JIS (KNN)",JIS_knn,Datasets.dev.data)},
+        {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev.data)},
+    )
 
-    val svm_correct = Datasets.dev.data.count { user ->
-        SVM.classify(user).isBot() == user.isBot()
+    experiments.forEach {
+        val e = it()
+        println("${e.name}: ${e.accuracy*100}% accuracy | ${e.falsePositivePercent*100}% false positives | ${e.falseNegativePercent*100}% false negatives")
     }
-    println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
-
-    val JIS_knn = kNN(k = 5, features = JISfeatures, training_data = Datasets.train.data)
-
-    val jis_correct = Datasets.dev.data.count { user ->
-        JIS_knn.classify(user).isBot() == user.isBot()
-    }
-    println("JIS (KNN): $jis_correct results were correct out of $total (${jis_correct.toDouble() / total * 100}% accuracy)")
-
 
 //    val classifiers = listOf(
 //        classifiers.kNN( k = 3, features = features),
@@ -147,6 +149,37 @@ fun main(args: Array<String>) {
 //    println("Best Percentage found: $max")
 
 
+}
+
+data class ExperimentResults(
+    val name: String,
+    val accuracy: Double,
+    val falsePositivePercent: Double,
+    val falseNegativePercent: Double,
+    val total: Int
+)
+
+fun runExperiment(
+    name: String,
+    classifier: Classifier,
+    dataset: List<User>
+) : ExperimentResults {
+    val total = dataset.size
+    var correct = 0.0
+    var falseN = 0.0
+    var falseP = 0.0
+    dataset.map {
+        val match =  classifier.classify(it).isBot() == it.isBot()
+        if (match){
+            correct++
+        } else if (it.isBot()) {
+            falseN++
+        } else {
+            falseP++
+        }
+    }
+
+    return ExperimentResults(name, correct/total, falseP/total, falseN/total, total)
 }
 
 data class Entry(

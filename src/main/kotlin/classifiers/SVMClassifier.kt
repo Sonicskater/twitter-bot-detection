@@ -27,7 +27,7 @@ class SVMClassifier(
         trainingData,
         smu_labels_vector,
         kernel,
-        0.5 // from https://scholar.smu.edu/cgi/viewcontent.cgi?article=1019&context=datasciencereview
+        0.5// from https://scholar.smu.edu/cgi/viewcontent.cgi?article=1019&context=datasciencereview
     )
 
     override fun classify(user: User): Classifier.Result {

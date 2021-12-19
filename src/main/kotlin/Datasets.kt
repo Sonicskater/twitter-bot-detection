@@ -6,9 +6,8 @@ import java.util.zip.ZipFile
 object Datasets {
     private val filename = "Twibot-20.zip"
 
-    private val stream by lazy { ZipFile(filename) }
-
     private val entries by lazy {
+        val stream = ZipFile(filename)
         stream.entries()
             .asSequence()
             .filter {
