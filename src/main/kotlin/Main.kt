@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
         //MISSING: Num Tweets per Day,
         //MISSING: Uses Emoticons,
         //MISSING: Tweets from mobile,
-        IsMultilingual().asLinear(),
+        //IsMultilingual().asLinear(),
         //MISSING: Tweet via PC,
         //MISSING: Use Symbols in name,
         //MISSING: Pictures in tweets,
@@ -112,7 +112,7 @@ fun main(args: Array<String>) {
     }
     println("SMU (SVM): $svm_correct results were correct out of $total (${svm_correct.toDouble() / total * 100}% accuracy)")
 
-    val JIS_knn = kNN(k = 5, features = JISfeatures, training_data = Datasets.train.data)
+    val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
 
     val jis_correct = Datasets.dev.data.count { user ->
         JIS_knn.classify(user).isBot() == user.isBot()

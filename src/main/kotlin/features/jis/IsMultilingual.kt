@@ -18,15 +18,19 @@ class IsMultilingual : BinaryFeature {
             normalizer.normalize(it.text) // Normalize tweet text
         } ?: return false
 
-        val firstTweet= data.first()
-        val first = detector.detectLanguageOf(firstTweet)
+        val firstTweet= data.firstOrNull{
+            val x = detector.detectLanguageOf(it)
+            x != Language.UNKNOWN
+        } ?: return false
 
-        if (first == Language.UNKNOWN){
-            println("WARNING: First Tweet language is UNKNOWN!")
+        val firstLang = detector.detectLanguageOf(firstTweet)
+
+        if (firstLang == Language.UNKNOWN){
+            println("WARNING: First Tweet language is UNKNOWN! ($firstTweet)")
         }
 
-        val checker = LanguageDetectorBuilder.fromLanguages(first, Language.ENGLISH, Language.HINDI).build()
+        val checker = LanguageDetectorBuilder.fromLanguages(firstLang, Language.ENGLISH, Language.HINDI).build()
 
-        return data.any { checker.detectLanguageOf(it) != first }
+        return data.any { checker.detectLanguageOf(it) != firstLang }
     }
 }
