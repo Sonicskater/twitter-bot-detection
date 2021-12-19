@@ -38,7 +38,7 @@ tasks.withType<KotlinCompile>() {
 }
 
 tasks.withType<JavaExec>(){
-    jvmArgs = listOf("-Xms8g","-Xmx8g")
+    jvmArgs = listOf("-Xms12g","-Xmx12g")
 }
 
 application {
