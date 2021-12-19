@@ -101,12 +101,14 @@ data class Profile(
     val default_profile_image: String?,
     val profile_use_background_image: String?,
     val has_extended_profile: String?,
-    val profile_location: String?
+    val profile_location: String?,
+    val statuses_count: String?
 ){
     @Transient
     val followers: Int = followers_count?.trim()?.toInt() ?: 0
     val following: Int = friends_count?.trim()?.toInt() ?: 0
     val likes: Int = favourites_count?.trim()?.toInt() ?: 0
+    val tweets: Int = statuses_count?.trim()?.toInt() ?: 0
 
     val isVerified = when (verified){
         "False " -> false
@@ -155,6 +157,18 @@ data class Profile(
 
     val hasDescription = when (description){
         " " -> false
+        else -> true
+    }
+
+    val hasScreenName = when(screen_name){
+        " " -> false
+        "None " -> false
+        else -> true
+    }
+
+    val hasID = when(id){
+        " " -> false
+        "None " -> false
         else -> true
     }
 
