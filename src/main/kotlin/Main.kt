@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
         //MISSING: Num Tweets per Day,
         //MISSING: Uses Emoticons,
         //MISSING: Tweets from mobile,
-        //IsMultilingual().asLinear(),
+        IsMultilingual().asLinear(), // WARNING: EXTREMELY PERFORMANCE AND MEMORY INTENSIVE!
         //MISSING: Tweet via PC,
         //MISSING: Use Symbols in name,
         //MISSING: Pictures in tweets,
@@ -114,9 +114,14 @@ fun main(args: Array<String>) {
 
     val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
 
-    val jis_correct = Datasets.dev.data.count { user ->
-        JIS_knn.classify(user).isBot() == user.isBot()
-    }
+    val jis_correct = Datasets.dev.data.parallelStream().mapToInt { user->
+        if (JIS_knn.classify(user).isBot() == user.isBot()){
+            1
+        } else {
+            0
+        }
+    }.sum()
+
     println("JIS (KNN): $jis_correct results were correct out of $total (${jis_correct.toDouble() / total * 100}% accuracy)")
 
 

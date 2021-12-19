@@ -8,7 +8,7 @@ import smile.nlp.normalizer.SimpleNormalizer
 
 class IsMultilingual : BinaryFeature {
 
-    val detector = LanguageDetectorBuilder.fromLanguages(Language.ENGLISH, Language.HINDI, Language.RUSSIAN, Language.SPANISH, Language.FRENCH, Language.GERMAN).build()
+    val detector = LanguageDetectorBuilder.fromAllLanguagesWithLatinScript().build()
 
     val normalizer = SimpleNormalizer.getInstance()
 
@@ -18,19 +18,16 @@ class IsMultilingual : BinaryFeature {
             normalizer.normalize(it.text) // Normalize tweet text
         } ?: return false
 
-        val firstTweet= data.firstOrNull{
+        val tweetLangs = data.map {
             val x = detector.detectLanguageOf(it)
-            x != Language.UNKNOWN
-        } ?: return false
-
-        val firstLang = detector.detectLanguageOf(firstTweet)
-
-        if (firstLang == Language.UNKNOWN){
-            println("WARNING: First Tweet language is UNKNOWN! ($firstTweet)")
+            println("Detected Language: ${x.name}")
+            x
+        }.filter {
+            it != Language.UNKNOWN
         }
 
-        val checker = LanguageDetectorBuilder.fromLanguages(firstLang, Language.ENGLISH, Language.HINDI).build()
+        val first = tweetLangs.firstOrNull() ?: return false
 
-        return data.any { checker.detectLanguageOf(it) != firstLang }
+        return tweetLangs.any { it != first }
     }
 }
