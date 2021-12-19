@@ -21,6 +21,10 @@ class IsMultilingual : BinaryFeature {
         val firstTweet= data.first()
         val first = detector.detectLanguageOf(firstTweet)
 
+        if (first == Language.UNKNOWN){
+            println("WARNING: First Tweet language is UNKNOWN!")
+        }
+
         val checker = LanguageDetectorBuilder.fromLanguages(first, Language.ENGLISH, Language.HINDI).build()
 
         return data.any { checker.detectLanguageOf(it) != first }
