@@ -14,6 +14,8 @@ import kotlin.math.pow
 
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
+
+
     println("Dev Dataset:")
     println("ENTRIES: ${ Datasets.dev.size }")
     println("TWEETS: ${Datasets.dev.sumOf { it.tweets?.size ?: 0 } }")
@@ -94,15 +96,22 @@ fun main(args: Array<String>) {
         LevenshteinDistanceLessThan30().asLinear(),
     )
 
-    val features = SMUfeatures + JISfeatures
+    val bothFeatures = SMUfeatures + JISfeatures
 
-    val kernel = GaussianKernel(1.0/features.size)
+    val allFeatures = bothFeatures + EmojiUsage()
+
+    val kernel = GaussianKernel(1.0/bothFeatures.size)
     val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train)
-    val BOTH_svm = SVMClassifier(kernel = kernel,features = features,training_data = Datasets.train)
     val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train)
     val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train)
-    val BOTH_knn = kNN(k = 50, features = features, training_data = Datasets.train)
     val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
+
+    val BOTH_knn = kNN(k = 50, features = bothFeatures, training_data = Datasets.train)
+    val BOTH_svm = SVMClassifier(kernel = kernel,features = bothFeatures,training_data = Datasets.train)
+
+    val all_knn = kNN(k = 50, features = allFeatures, training_data = Datasets.train)
+    val all_svm = SVMClassifier(kernel = kernel,features = allFeatures,training_data = Datasets.train)
+
     val experiments = sequenceOf(
         {runExperiment("SMU (SVM)",SVM,Datasets.dev)},
         {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev)},
@@ -110,6 +119,8 @@ fun main(args: Array<String>) {
         {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev)},
         {runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev)},
         {runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev)},
+        {runExperiment("ALL (SVM)",all_svm, Datasets.dev)},
+        {runExperiment("ALL (KNN)",all_knn, Datasets.dev)},
     )
 
     experiments.forEach {
