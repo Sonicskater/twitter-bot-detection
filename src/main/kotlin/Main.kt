@@ -39,31 +39,29 @@ fun main(args: Array<String>) {
 
     // https://www.researchgate.net/profile/Ala-Al-Zoubi/publication/335026858_Spam_profiles_detection_on_social_networks_using_computational_intelligence_methods_The_effect_of_the_lingual_context/links/5d650bfd458515d610276579/Spam-profiles-detection-on-social-networks-using-computational-intelligence-methods-The-effect-of-the-lingual-context.pdf
     val JISfeatures = listOf(
-        // MISSING: SUS WORDS
+        // MISSING: SUS WORDS // no list
         HighFollowingToFollowersRatio().asLinear(),
         UsingDefaultProfileImage().asLinear(),
         HighLinksToTweetRatio().asLinear(),
         //MISSING: Repeated Words,
         //MISSING: Comments Ratio,
-        //MISSING: Tweet Time Pattern,
-        //MISSING: Following Interest vs Tweets,
-
-        //MISSING: Description vs Tweets,
-
-        //MISSING: Num Tweets per Day,
-        //MISSING: Uses Emoticons,
-        //MISSING: Tweets from mobile,
+        //MISSING: Tweet Time Pattern, //missing data
+        //MISSING: Following Interest vs Tweets, //content analysis
+        //MISSING: Description vs Tweets, //not sure what this means
+        //MISSING: Num Tweets per Day, // missing data
+        //MISSING: Uses Emotions, // Might not be possible, can't do sentiment analysis
+        //MISSING: Tweets from mobile, // missing data
 
         IsMultilingual().asLinear(), // WARNING: EXTREMELY PERFORMANCE AND MEMORY INTENSIVE!
-        //MISSING: Tweet via PC,
+        //MISSING: Tweet via PC, // missing data
 
         NameContainsSymbols().asLinear(),
-        //MISSING: Pictures in tweets,
+        //MISSING: Pictures in tweets, // missing data
         NameContainsNumbers().asLinear(),
         UsesHashtag().asLinear(),
         DescHasLink().asLinear(),
-        //MISSING: Videos in Tweets,
-        //MISSING: Real Picture,
+        //MISSING: Videos in Tweets, // missing data
+        //MISSING: Real Picture, // missing data
 
         HasLocation().asLinear(),
         HasProfileLocation().asLinear(),
@@ -72,7 +70,7 @@ fun main(args: Array<String>) {
         //MISSING: LINKS TO OTHER SOCIAL MEDIA,
         AgeLessThan2Months().asLinear(),
         MoreThan100Followers().asLinear(),
-        //MISSING: Trending Topics,
+        //MISSING: Trending Topics, // requires topic analysis
 
         MoreThan50Following().asLinear()
     )
