@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
         //MISSING: Repeated Words,
         //MISSING: Comments Ratio,
         //MISSING: Tweet Time Pattern,
-        //MISSING: Follwing Interest vs Tweets,
+        //MISSING: Following Interest vs Tweets,
 
         //MISSING: Description vs Tweets,
 

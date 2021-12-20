@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+//Checks if the user account is missingID from the database.
 public class MissingID implements BinaryFeature {
 
     @Override

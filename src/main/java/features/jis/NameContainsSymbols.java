@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import java.util.Objects;
 
+//Class to check if the username has symbols, as symbols along with other machine made indicators, usually implies bot made user accounts most of the time
 public class NameContainsSymbols implements BinaryFeature {
 
     @Override

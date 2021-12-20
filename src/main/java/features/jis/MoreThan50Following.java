@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+//This is a class for the program to help check if a user is following more than 50 users.
 public class MoreThan50Following implements BinaryFeature {
 
     @Override

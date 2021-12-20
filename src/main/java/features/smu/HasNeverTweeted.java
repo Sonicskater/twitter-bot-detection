@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+//This is a class for the program to help check if the user has never tweeted.
 public class HasNeverTweeted implements BinaryFeature {
 
     @Override

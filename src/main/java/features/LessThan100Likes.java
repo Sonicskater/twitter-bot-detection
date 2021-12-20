@@ -3,6 +3,7 @@ package features;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
+//Class which helps check if the user account has more than a 100 likes.
 public class LessThan100Likes implements BinaryFeature {
 
     @Override

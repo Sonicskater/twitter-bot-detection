@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+//This class is for checking if the user account is less than 2 months old, the date May 28, 2021 is currently used because of dataset used is of that date.
 public class AgeLessThan2Months implements BinaryFeature {
 
     @Override
