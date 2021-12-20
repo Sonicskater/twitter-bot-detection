@@ -1,4 +1,5 @@
 package features
+import Dataset
 import kotlinx.serialization.*
 import org.apache.commons.text.similarity.LevenshteinDistance
 import java.text.SimpleDateFormat
@@ -91,9 +92,22 @@ data class User(
 
 @Serializable
 data class Neighbor(
-    val following: List<String>,
-    val follower: List<String>
-)
+    private val following: List<String>,
+    private val follower: List<String>
+){
+    @Transient
+    lateinit var dataset : Dataset
+
+
+    val followingUsers : List<User> by lazy {
+        following.mapNotNull { id ->
+            dataset.find {
+                it.ID == id
+            }
+        }
+    }
+
+}
 
 @Serializable
 data class Profile(
