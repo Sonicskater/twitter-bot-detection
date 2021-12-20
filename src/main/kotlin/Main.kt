@@ -74,7 +74,7 @@ fun main(args: Array<String>) {
         NameContainsSymbols().asLinear(),
         //MISSING: Pictures in tweets,
         NameContainsNumbers().asLinear(),
-        //MISSING: Uses #Hashtag,
+        UsesHashtag().asLinear(),
         DescHasLink().asLinear(),
         //MISSING: Videos in Tweets,
         //MISSING: Real Picture,
