@@ -1,6 +1,7 @@
 package features.jis;
 
 import features.BinaryFeature;
+import features.Retweet;
 import features.Tweet;
 import features.User;
 import org.jetbrains.annotations.NotNull;
@@ -18,13 +19,16 @@ public class UsesHashtag implements BinaryFeature {
         }
         for(Tweet tweet : tweets)
         {
-            String text = tweet.getText();
-            String[] textarray = text.split("\\s+");
-            for(String str : textarray)
+            if(!(tweet instanceof Retweet))
             {
-                if(str.startsWith("#"))
+                String text = tweet.getText();
+                String[] textarray = text.split("\\s+");
+                for(String str : textarray)
                 {
-                    return true;
+                    if(str.startsWith("#"))
+                    {
+                        return true;
+                    }
                 }
             }
         }
