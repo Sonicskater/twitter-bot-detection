@@ -15,25 +15,25 @@ import kotlin.math.pow
 @OptIn(ExperimentalSerializationApi::class)
 fun main(args: Array<String>) {
     println("Dev Dataset:")
-    println("ENTRIES: ${ Datasets.dev.data.size }")
-    println("TWEETS: ${Datasets.dev.data.sumOf { it.tweets?.size ?: 0 } }")
-    println("RETWEETS: ${Datasets.dev.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
+    println("ENTRIES: ${ Datasets.dev.size }")
+    println("TWEETS: ${Datasets.dev.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.dev.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
-    println("BOTS: ${Datasets.dev.data.count { it.isBot() }} ")
+    println("BOTS: ${Datasets.dev.count { it.isBot() }} ")
 
     println("Train Dataset:")
-    println("ENTRIES: ${ Datasets.train.data.size }")
-    println("TWEETS: ${Datasets.train.data.sumOf { it.tweets?.size ?: 0 } }")
-    println("RETWEETS: ${Datasets.train.data.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
+    println("ENTRIES: ${ Datasets.train.size }")
+    println("TWEETS: ${Datasets.train.sumOf { it.tweets?.size ?: 0 } }")
+    println("RETWEETS: ${Datasets.train.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
-    println("BOTS: ${Datasets.train.data.count { it.isBot() }} ")
+    println("BOTS: ${Datasets.train.count { it.isBot() }} ")
 
     val runtime = Runtime.getRuntime()
     val usedMemory = runtime.totalMemory()-runtime.freeMemory()
 
     println("USING ${usedMemory/(1024*1024)} MEGABYTES")
 
-    val total = Datasets.dev.data.size
+    val total = Datasets.dev.size
 
     // https://www.researchgate.net/profile/Ala-Al-Zoubi/publication/335026858_Spam_profiles_detection_on_social_networks_using_computational_intelligence_methods_The_effect_of_the_lingual_context/links/5d650bfd458515d610276579/Spam-profiles-detection-on-social-networks-using-computational-intelligence-methods-The-effect-of-the-lingual-context.pdf
     val JISfeatures = listOf(
@@ -97,19 +97,19 @@ fun main(args: Array<String>) {
     val features = SMUfeatures + JISfeatures
 
     val kernel = GaussianKernel(1.0/features.size)
-    val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train.data)
-    val BOTH_svm = SVMClassifier(kernel = kernel,features = features,training_data = Datasets.train.data)
-    val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train.data)
-    val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train.data)
-    val BOTH_knn = kNN(k = 50, features = features, training_data = Datasets.train.data)
-    val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
+    val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train)
+    val BOTH_svm = SVMClassifier(kernel = kernel,features = features,training_data = Datasets.train)
+    val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train)
+    val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train)
+    val BOTH_knn = kNN(k = 50, features = features, training_data = Datasets.train)
+    val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
     val experiments = sequenceOf(
-        {runExperiment("SMU (SVM)",SVM,Datasets.dev.data)},
-        {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev.data)},
-        {runExperiment("JIS (KNN)",JIS_knn,Datasets.dev.data)},
-        {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev.data)},
-        {runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev.data )},
-        {runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev.data )},
+        {runExperiment("SMU (SVM)",SVM,Datasets.dev)},
+        {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev)},
+        {runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)},
+        {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev)},
+        {runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev)},
+        {runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev)},
     )
 
     experiments.forEach {

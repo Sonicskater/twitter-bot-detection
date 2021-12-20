@@ -27,19 +27,52 @@ object Datasets {
             }.toList()
     }
 
-    val train = entries.find {
+    val train = Dataset(entries.find {
         it.z.name == "Twibot-20/train.json"
-    }!!
+    }!!.data)
+        .also { dataset ->
+            dataset.forEach {
+                it.neighbor?.dataset = dataset
+            }
+        }
 
-    val support = entries.find {
+    val support = Dataset(entries.find {
         it.z.name == "Twibot-20/support.json"
-    }!!
+    }!!.data)
+        .also { dataset ->
+            dataset.forEach {
+                it.neighbor?.dataset = dataset
+            }
+        }
 
-    val dev = entries.find {
+    val dev = Dataset(entries.find {
         it.z.name == "Twibot-20/dev.json"
-    }!!
+    }!!.data)
+        .also { dataset ->
+            dataset.forEach {
+                it.neighbor?.dataset = dataset
+            }
+        }
 
-    val test = entries.find {
+
+    val test = Dataset(entries.find {
         it.z.name == "Twibot-20/test.json"
-    }!!
+    }!!.data)
+        .also { dataset ->
+            dataset.forEach {
+                it.neighbor?.dataset = dataset
+            }
+        }
+
+}
+
+class Dataset(private val list : List<User>) : List<User> by list{
+
+    val cache : MutableMap<String,User?> = mutableMapOf()
+
+    fun findByID(id : String) : User?{
+        return cache.getOrPut(id){
+            list.find { it.ID == id }
+        }
+    }
 }

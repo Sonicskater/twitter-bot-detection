@@ -19,7 +19,7 @@ class SVMClassifier(
         }
     }.toIntArray()
 
-    val trainingData = Datasets.train.data.toTypedArray().map {
+    val trainingData = training_data.toTypedArray().map {
         extractFeatures(it).toDoubleArray()
     }.toTypedArray()
 
