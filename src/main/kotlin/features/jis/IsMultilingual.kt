@@ -9,22 +9,17 @@ import smile.nlp.normalizer.SimpleNormalizer
 
 class IsMultilingual : BinaryFeature {
 
-    val langs: MutableMap<Language,LanguageDetector> = mutableMapOf()
-
     val detector = LanguageDetectorBuilder.fromAllSpokenLanguages().build()
-
-    val normalizer = SimpleNormalizer.getInstance()
 
     override fun hasFeature(user: User): Boolean {
 
-        val data = user.tweets?.map {
-            normalizer.normalize(it.text) // Normalize tweet text
+        val data = user.tweets?.asSequence()?.map {
+            it.normalized
         } ?: return false
 
         val tweetLang = data
             // makes mapping lazy, to speed up the program and prevent running expensive
             // all lang check on every single tweet
-            .asSequence()
             .map {
                 val x = detector.detectLanguageOf(it)
                 //println("Detected Language: ${x.name}")

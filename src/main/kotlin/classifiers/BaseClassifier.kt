@@ -9,7 +9,7 @@ abstract class BaseClassifier(
 )  : Classifier {
 
 
-    protected val knownFeatures = training_data.map { user ->
+    protected val knownFeatures = training_data.asSequence().map { user ->
         user to extractFeatures(user)
     }
 

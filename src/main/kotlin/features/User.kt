@@ -2,12 +2,14 @@ package features
 import Dataset
 import kotlinx.serialization.*
 import org.apache.commons.text.similarity.LevenshteinDistance
+import smile.nlp.normalizer.SimpleNormalizer
 import java.text.SimpleDateFormat
 import java.util.*
 
 interface Tweet{
     val text: String
     val hasImage: Boolean
+    val normalized : String
 }
 
 interface Retweet : Tweet{
@@ -19,9 +21,15 @@ interface Reply : Tweet {
 }
 
 
+private val normalizer = SimpleNormalizer.getInstance()
+
 private open class ConcreteTweet(
     override val text: String, override val hasImage: Boolean
-) : Tweet
+) : Tweet{
+    override val normalized : String by lazy{
+        normalizer.normalize(text)
+    }
+}
 
 private class ConcreteReply(override val user: String, text: String, hasImage: Boolean) : ConcreteTweet(text, hasImage), Reply
 
