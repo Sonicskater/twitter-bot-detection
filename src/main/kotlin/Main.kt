@@ -35,22 +35,6 @@ fun main(args: Array<String>) {
 
     val total = Datasets.dev.data.size
 
-    val features : List<LinearFeature> = listOf(
-        AgeLessThan2Months().asLinear(),
-        HasDescription().asLinear(),
-        HighFollowingToFollowersRatio().asLinear(),
-        LessThan30Followers().asLinear(),
-        LevenshteinDistanceLessThan30().asLinear(),
-        LessThan100Likes().asLinear(),
-        MoreThan50Following().asLinear(),
-        MoreThan100Followers().asLinear(),
-        ProfileUsesBackgroundImage().asLinear(),
-        UserIsVerified().asLinear(),
-        UsesExtendedProfile().asLinear(),
-        UsingDefaultProfile().asLinear(),
-        UsingDefaultProfileImage().asLinear(),
-    )
-
     // https://www.researchgate.net/profile/Ala-Al-Zoubi/publication/335026858_Spam_profiles_detection_on_social_networks_using_computational_intelligence_methods_The_effect_of_the_lingual_context/links/5d650bfd458515d610276579/Spam-profiles-detection-on-social-networks-using-computational-intelligence-methods-The-effect-of-the-lingual-context.pdf
     val JISfeatures = listOf(
         // MISSING: SUS WORDS
@@ -110,16 +94,22 @@ fun main(args: Array<String>) {
         LevenshteinDistanceLessThan30().asLinear(),
     )
 
+    val features = SMUfeatures + JISfeatures
+
     val kernel = GaussianKernel(1.0/features.size)
     val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train.data)
+    val BOTH_svm = SVMClassifier(kernel = kernel,features = features,training_data = Datasets.train.data)
     val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train.data)
     val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train.data)
+    val BOTH_knn = kNN(k = 50, features = features, training_data = Datasets.train.data)
     val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train.data)
     val experiments = sequenceOf(
         {runExperiment("SMU (SVM)",SVM,Datasets.dev.data)},
         {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev.data)},
         {runExperiment("JIS (KNN)",JIS_knn,Datasets.dev.data)},
         {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev.data)},
+        {runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev.data )},
+        {runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev.data )},
     )
 
     experiments.forEach {
