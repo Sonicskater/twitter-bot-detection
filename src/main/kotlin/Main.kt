@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
         // MISSING: SUS WORDS
         HighFollowingToFollowersRatio().asLinear(),
         UsingDefaultProfileImage().asLinear(),
-        //MISSING: high Text-to-links ratio,
+        HighLinksToTweetRatio().asLinear(),
         //MISSING: Repeated Words,
         //MISSING: Comments Ratio,
         //MISSING: Tweet Time Pattern,
