@@ -101,26 +101,41 @@ fun main(args: Array<String>) {
     val allFeatures = bothFeatures + EmojiUsage()
 
     val kernel = GaussianKernel(1.0/bothFeatures.size)
-    val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train)
-    val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train)
-    val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train)
-    val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
-
-    val BOTH_knn = kNN(k = 50, features = bothFeatures, training_data = Datasets.train)
-    val BOTH_svm = SVMClassifier(kernel = kernel,features = bothFeatures,training_data = Datasets.train)
-
-    val all_knn = kNN(k = 50, features = allFeatures, training_data = Datasets.train)
-    val all_svm = SVMClassifier(kernel = kernel,features = allFeatures,training_data = Datasets.train)
 
     val experiments = sequenceOf(
-        {runExperiment("SMU (SVM)",SVM,Datasets.dev)},
-        {runExperiment("SMU (KNN)",SVM_knn,Datasets.dev)},
-        {runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)},
-        {runExperiment("JIS (SVM)",JIS_svm,Datasets.dev)},
-        {runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev)},
-        {runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev)},
-        {runExperiment("ALL (SVM)",all_svm, Datasets.dev)},
-        {runExperiment("ALL (KNN)",all_knn, Datasets.dev)},
+        {
+            val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train)
+            runExperiment("SMU (SVM)",SVM,Datasets.dev)
+        },
+        {
+            val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train)
+            runExperiment("SMU (KNN)",SVM_knn,Datasets.dev)
+        },
+        {
+            val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
+            runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)
+        },
+        {
+            val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train)
+            runExperiment("JIS (SVM)",JIS_svm,Datasets.dev)
+        },
+        {
+
+            val BOTH_svm = SVMClassifier(kernel = kernel,features = bothFeatures,training_data = Datasets.train)
+            runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev)
+        },
+        {
+            val BOTH_knn = kNN(k = 50, features = bothFeatures, training_data = Datasets.train)
+            runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev)
+        },
+        {
+            val all_svm = SVMClassifier(kernel = kernel,features = allFeatures,training_data = Datasets.train)
+            runExperiment("ALL (SVM)",all_svm, Datasets.dev)
+        },
+        {
+            val all_knn = kNN(k = 50, features = allFeatures, training_data = Datasets.train)
+            runExperiment("ALL (KNN)",all_knn, Datasets.dev)
+        },
     )
 
     experiments.forEach {
