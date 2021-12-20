@@ -13,10 +13,16 @@ interface Retweet : Tweet{
     val user: String
 }
 
+interface Reply : Tweet {
+    val user : String
+}
+
 
 private open class ConcreteTweet(
     override val text: String, override val hasImage: Boolean
 ) : Tweet
+
+private class ConcreteReply(override val user: String, text: String, hasImage: Boolean) : ConcreteTweet(text, hasImage), Reply
 
 private class ConcreteRetweet(
     override val user: String,
@@ -34,16 +40,23 @@ data class User(
 
     @Transient
     private val retweetRegex = Regex("RT @[a-zA-Z0-9]*:")
+    @Transient
+    private val replyRegex = Regex("@[a-zA-Z0-9]* ")
 
     val tweets: List<Tweet>? by lazy {
         tweet?.map {
 
             val hasImage = false
 
-            val name = retweetRegex.find(it)
+            val hasRetweetName = retweetRegex.find(it)
+            val hasReplyName = replyRegex.find(it)
 
-            if (name != null){
-                ConcreteRetweet(name.value,it.substringAfter(name.value),hasImage)
+            if (hasRetweetName != null){
+                val name = hasRetweetName.value.substringAfter('@').substringBefore(':')
+                ConcreteRetweet(name,it.substringAfter(hasRetweetName.value),hasImage)
+            } else if (hasReplyName != null) {
+                val name = hasReplyName.value.substringAfter('@').substringBefore(' ')
+                ConcreteReply(name, it.substringAfter(hasReplyName.value), hasImage)
             } else {
                 ConcreteTweet(it, hasImage)
             }
@@ -80,9 +93,7 @@ data class User(
 data class Neighbor(
     val following: List<String>,
     val follower: List<String>
-) {
-
-}
+)
 
 @Serializable
 data class Profile(
