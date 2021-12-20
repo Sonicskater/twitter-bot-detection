@@ -38,8 +38,6 @@ fun main(args: Array<String>) {
     val features : List<LinearFeature> = listOf(
         AgeLessThan2Months().asLinear(),
         HasDescription().asLinear(),
-        HasLocation().asLinear(),
-        HasProfileLocation().asLinear(),
         HighFollowingToFollowersRatio().asLinear(),
         LessThan30Followers().asLinear(),
         LevenshteinDistanceLessThan30().asLinear(),
@@ -63,12 +61,16 @@ fun main(args: Array<String>) {
         //MISSING: Comments Ratio,
         //MISSING: Tweet Time Pattern,
         //MISSING: Follwing Interest vs Tweets,
+
         //MISSING: Description vs Tweets,
+
         //MISSING: Num Tweets per Day,
         //MISSING: Uses Emoticons,
         //MISSING: Tweets from mobile,
+
         IsMultilingual().asLinear(), // WARNING: EXTREMELY PERFORMANCE AND MEMORY INTENSIVE!
         //MISSING: Tweet via PC,
+
         NameContainsSymbols().asLinear(),
         //MISSING: Pictures in tweets,
         NameContainsNumbers().asLinear(),
@@ -76,13 +78,16 @@ fun main(args: Array<String>) {
         DescHasLink().asLinear(),
         //MISSING: Videos in Tweets,
         //MISSING: Real Picture,
-        //MISSING: Living Place,
+
+        HasLocation().asLinear(),
+        HasProfileLocation().asLinear(),
         RetweetsMoreThanTweets().asLinear(),
         LessThan100Likes().asLinear(),
         //MISSING: LINKS TO OTHER SOCIAL MEDIA,
         AgeLessThan2Months().asLinear(),
         MoreThan100Followers().asLinear(),
         //MISSING: Trending Topics,
+
         MoreThan50Following().asLinear()
     )
 
