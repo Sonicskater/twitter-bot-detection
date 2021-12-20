@@ -5,6 +5,7 @@ import features.User;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
+//Helps check if the user account has a ratio of 50-1 for friends to followers count.
 public class FiftyToOneFriendsToFollowers implements BinaryFeature {
 
     @Override

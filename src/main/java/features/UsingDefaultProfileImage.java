@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+//Class which helps check if the user account has a default twitter profile image.
 public class UsingDefaultProfileImage implements BinaryFeature {
 
     @Override

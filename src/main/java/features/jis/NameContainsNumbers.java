@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-//Classifier to check if the username has numbers, as numbers along with other bot made indicators, usually implies bot made user accounts most of the time.
+//Class to help check if the username has numbers, as numbers along with other bot made indicators, usually implies bot made user accounts most of the time.
 public class NameContainsNumbers implements BinaryFeature {
 
     @Override

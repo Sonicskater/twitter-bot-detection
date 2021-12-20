@@ -5,7 +5,7 @@ import features.User;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
-//Classifier to check if the number of accounts a user is following is significantly higher than the number of accounts following the user
+//Class to check if the number of accounts a user is following is significantly higher than the number of accounts following the user
 public class HighFollowingToFollowersRatio implements BinaryFeature {
 
     @Override

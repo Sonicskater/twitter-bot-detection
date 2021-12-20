@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+//This is a class for program to help check if a user has tweeted less than 50 times.
 public class LessThan50Tweets implements BinaryFeature {
 
     @Override
