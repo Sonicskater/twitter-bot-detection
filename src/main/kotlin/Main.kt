@@ -35,24 +35,6 @@ fun main(args: Array<String>) {
 
     val total = Datasets.dev.data.size
 
-    val features : List<LinearFeature> = listOf(
-        AgeLessThan2Months().asLinear(),
-        HasDescription().asLinear(),
-        HasLocation().asLinear(),
-        HasProfileLocation().asLinear(),
-        HighFollowingToFollowersRatio().asLinear(),
-        LessThan30Followers().asLinear(),
-        LevenshteinDistanceLessThan30().asLinear(),
-        LessThan100Likes().asLinear(),
-        MoreThan50Following().asLinear(),
-        MoreThan100Followers().asLinear(),
-        ProfileUsesBackgroundImage().asLinear(),
-        UserIsVerified().asLinear(),
-        UsesExtendedProfile().asLinear(),
-        UsingDefaultProfile().asLinear(),
-        UsingDefaultProfileImage().asLinear(),
-    )
-
     // https://www.researchgate.net/profile/Ala-Al-Zoubi/publication/335026858_Spam_profiles_detection_on_social_networks_using_computational_intelligence_methods_The_effect_of_the_lingual_context/links/5d650bfd458515d610276579/Spam-profiles-detection-on-social-networks-using-computational-intelligence-methods-The-effect-of-the-lingual-context.pdf
     val JISfeatures = listOf(
         // MISSING: SUS WORDS
