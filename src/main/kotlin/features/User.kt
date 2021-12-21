@@ -73,11 +73,11 @@ data class User(
         }
     }
 
-    fun isBot(): Boolean {
+    fun isBot(): Boolean? {
         return when(label){
             0 -> false
             1 -> true
-            else -> throw Exception("Invalid label variable")
+            else -> null
         }
     }
     val levenshteinDistanceLessThan30: Boolean by lazy{
@@ -143,6 +143,7 @@ data class Profile(
     val following: Int = friends_count?.trim()?.toInt() ?: 0
     val likes: Int = favourites_count?.trim()?.toInt() ?: 0
     val tweets: Int = statuses_count?.trim()?.toInt() ?: 0
+    val listed: Int = listed_count?.trim()?.toInt() ?: 0
 
     val isVerified = when (verified){
         "False " -> false

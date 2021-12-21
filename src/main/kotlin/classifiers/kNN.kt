@@ -21,8 +21,8 @@ class kNN(
 
         val result = distances.sortedBy { it.second }.take(k)
 
-        val bots = result.count { (user, _) -> user.isBot() }
-        val real = result.count { (user, _) -> !user.isBot() }
+        val bots = result.count { (user, _) -> user.isBot()!! }
+        val real = result.count { (user, _) -> !user.isBot()!! }
 
         return Classifier.Result(bots.toDouble() / k, real.toDouble() / k)
     }

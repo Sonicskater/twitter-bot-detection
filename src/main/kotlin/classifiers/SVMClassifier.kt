@@ -15,7 +15,7 @@ class SVMClassifier(
     val kernel: MercerKernel<DoubleArray> = GaussianKernel(1.0/features.size)
 
     val smu_labels_vector = training_data.map {
-        when (it.isBot()){
+        when (it.isBot()!!){
             true -> 1 // is bot
             false -> -1 // is not bot
         }

@@ -22,14 +22,14 @@ fun main(args: Array<String>) {
     println("TWEETS: ${Datasets.dev.sumOf { it.tweets?.size ?: 0 } }")
     println("RETWEETS: ${Datasets.dev.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
-    println("BOTS: ${Datasets.dev.count { it.isBot() }} ")
+    println("BOTS: ${Datasets.dev.count { it.isBot() ?: false }} ")
 
     println("Train Dataset:")
     println("ENTRIES: ${ Datasets.train.size }")
     println("TWEETS: ${Datasets.train.sumOf { it.tweets?.size ?: 0 } }")
     println("RETWEETS: ${Datasets.train.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
-    println("BOTS: ${Datasets.train.count { it.isBot() }} ")
+    println("BOTS: ${Datasets.train.count { it.isBot() ?: false }} ")
 
 
 
@@ -163,10 +163,10 @@ fun main(args: Array<String>) {
             val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
             runExperiment("Optimized (SVM) Train Data",optimized_svm, Datasets.train)
         },
-//        {
-//            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
-//            runExperiment("Optimized (SVM) Support Data",optimized_svm, Datasets.support)
-//        },
+        {
+            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
+            runExperiment("Optimized (SVM) Support Data",optimized_svm, Datasets.support)
+        },
     )
 
     experiments.forEach {
@@ -217,7 +217,7 @@ fun optimizedFeatures(features: List<LinearFeature>, dataset: Dataset, cutoff: D
     }.toTypedArray()
 
     val labels = dataset.map {
-        when (it.isBot()){
+        when (it.isBot()!!){
             true -> 1 // is bot
             false -> -1 // is not bot
         }
@@ -257,11 +257,14 @@ fun runExperiment(
     var correct = 0.0
     var falseN = 0.0
     var falseP = 0.0
-    dataset.map {
-        val match =  classifier.classify(it).isBot() == it.isBot()
+    dataset.filter {
+        it.isBot() != null
+    }.map {
+        val isUserBot = it.isBot()!!
+        val match =  classifier.classify(it).isBot() == isUserBot
         if (match){
             correct++
-        } else if (it.isBot()) {
+        } else if (isUserBot) {
             falseN++
         } else {
             falseP++
