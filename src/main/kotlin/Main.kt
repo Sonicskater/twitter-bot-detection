@@ -150,10 +150,10 @@ fun main(args: Array<String>) {
             val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
             runExperiment("Optimized (SVM) Dev Data",optimized_svm, Datasets.dev)
         },
-//        {
-//            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
-//            runExperiment("Optimized (KNN)",optimized_knn, Datasets.dev)
-//        },
+        {
+            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
+            runExperiment("Optimized (KNN) Dev Data",optimized_knn, Datasets.dev)
+        },
         {
             val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
             runExperiment("Optimized (SVM) Test Data",optimized_svm, Datasets.test)
