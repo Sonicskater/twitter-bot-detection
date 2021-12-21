@@ -44,6 +44,7 @@ data class User(
     val profile: Profile?,
     private val tweet: List<String>? = null,
     val neighbor: Neighbor? = null,
+    val domain: List<String>,
     private val label: Int? = null
 ){
 

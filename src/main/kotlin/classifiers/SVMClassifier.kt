@@ -4,13 +4,15 @@ import Datasets
 import features.LinearFeature
 import features.User
 import smile.classification.svm
+import smile.math.kernel.GaussianKernel
 import smile.math.kernel.MercerKernel
 
 class SVMClassifier(
-    val kernel: MercerKernel<DoubleArray>,
     features: List<LinearFeature>,
     training_data: List<User>
 ) : BaseClassifier(features, training_data) {
+
+    val kernel: MercerKernel<DoubleArray> = GaussianKernel(1.0/features.size)
 
     val smu_labels_vector = training_data.map {
         when (it.isBot()){
