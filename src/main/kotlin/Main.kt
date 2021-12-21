@@ -97,6 +97,11 @@ fun main(args: Array<String>) {
         EmojiUsage(),
         UserIsVerified().asLinear(),
         ProfileUsesBackgroundImage().asLinear(),
+        BusinessDomain().asLinear(),
+        EntertainmentDomain().asLinear(),
+        PoliticsDomain().asLinear(),
+        SportsDomain().asLinear(),
+        DomainCount()
     )
 
     val bothFeatures = SMUfeatures + JISfeatures
