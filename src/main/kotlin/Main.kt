@@ -8,6 +8,7 @@ import features.jis.*
 import features.smu.LessThan30Followers
 import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
+import smile.feature.SignalNoiseRatio
 import smile.math.kernel.GaussianKernel
 import java.util.zip.*
 import kotlin.math.pow
@@ -29,6 +30,8 @@ fun main(args: Array<String>) {
     println("RETWEETS: ${Datasets.train.sumOf { it.tweets?.filterIsInstance<Retweet>()?.size ?: 0 } }")
 
     println("BOTS: ${Datasets.train.count { it.isBot() }} ")
+
+
 
     val runtime = Runtime.getRuntime()
     val usedMemory = runtime.totalMemory()-runtime.freeMemory()
@@ -94,46 +97,75 @@ fun main(args: Array<String>) {
         LevenshteinDistanceLessThan30().asLinear(),
     )
 
+    val newFeatures = listOf(
+        EmojiUsage(),
+        UserIsVerified().asLinear(),
+        ProfileUsesBackgroundImage().asLinear(),
+    )
+
     val bothFeatures = SMUfeatures + JISfeatures
 
-    val allFeatures = bothFeatures + EmojiUsage()
+    val allFeatures = bothFeatures + newFeatures
 
-    val kernel = GaussianKernel(1.0/bothFeatures.size)
+    val optimized = optimizedFeatures(allFeatures, Datasets.train)
+
+    //val kernel = GaussianKernel(1.0/bothFeatures.size)
 
     val experiments = sequenceOf(
-        {
-            val SVM = SVMClassifier(kernel = kernel,features = SMUfeatures,training_data = Datasets.train)
-            runExperiment("SMU (SVM)",SVM,Datasets.dev)
-        },
+//        {
+//
+//            val SVM = SVMClassifier(features = SMUfeatures,training_data = Datasets.train)
+//            runExperiment("SMU (SVM)",SVM,Datasets.dev)
+//        },
 //        {
 //            val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train)
 //            runExperiment("SMU (KNN)",SVM_knn,Datasets.dev)
 //        },
-        {
-            val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
-            runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)
-        },
 //        {
-//            val JIS_svm = SVMClassifier(kernel = kernel,features = JISfeatures,training_data = Datasets.train)
+//            val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
+//            runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)
+//        },
+//        {
+//            val JIS_svm = SVMClassifier(features = JISfeatures,training_data = Datasets.train)
 //            runExperiment("JIS (SVM)",JIS_svm,Datasets.dev)
 //        },
 //        {
 //
-//            val BOTH_svm = SVMClassifier(kernel = kernel,features = bothFeatures,training_data = Datasets.train)
+//            val BOTH_svm = SVMClassifier(features = bothFeatures,training_data = Datasets.train)
 //            runExperiment("JIS+SMU (SVM)",BOTH_svm, Datasets.dev)
 //        },
 //        {
 //            val BOTH_knn = kNN(k = 50, features = bothFeatures, training_data = Datasets.train)
 //            runExperiment("JIS+SMU (KNN)",BOTH_knn, Datasets.dev)
 //        },
+//        {
+//            val all_svm = SVMClassifier(features = allFeatures,training_data = Datasets.train)
+//            runExperiment("ALL (SVM)",all_svm, Datasets.dev)
+//        },
+//        {
+//            val all_knn = kNN(k = 50, features = allFeatures, training_data = Datasets.train)
+//            runExperiment("ALL (KNN)",all_knn, Datasets.dev)
+//        },
         {
-            val all_svm = SVMClassifier(kernel = kernel,features = allFeatures,training_data = Datasets.train)
-            runExperiment("ALL (SVM)",all_svm, Datasets.dev)
+            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
+            runExperiment("Optimized (SVM) Dev Data",optimized_svm, Datasets.dev)
+        },
+//        {
+//            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
+//            runExperiment("Optimized (KNN)",optimized_knn, Datasets.dev)
+//        },
+        {
+            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
+            runExperiment("Optimized (SVM) Test Data",optimized_svm, Datasets.test)
         },
         {
-            val all_knn = kNN(k = 50, features = allFeatures, training_data = Datasets.train)
-            runExperiment("ALL (KNN)",all_knn, Datasets.dev)
+            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
+            runExperiment("Optimized (SVM) Train Data",optimized_svm, Datasets.train)
         },
+//        {
+//            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
+//            runExperiment("Optimized (SVM) Support Data",optimized_svm, Datasets.support)
+//        },
     )
 
     experiments.forEach {
@@ -168,6 +200,43 @@ fun main(args: Array<String>) {
 //    println("Best Percentage found: $max")
 
 
+}
+
+fun optimizedFeatures(features: List<LinearFeature>, dataset: Dataset, cutoff: Double = 0.1) : List<LinearFeature>{
+    val featureRanker = SignalNoiseRatio()
+
+//    val numberedFeatures = features.withIndex().associate {
+//        it.index to it.value
+//    }
+
+    val data = dataset.map { u ->
+        features.map {
+            it.hasFeature(u).toDouble()
+        }.toDoubleArray()
+    }.toTypedArray()
+
+    val labels = dataset.map {
+        when (it.isBot()){
+            true -> 1 // is bot
+            false -> -1 // is not bot
+        }
+    }.toIntArray()
+
+    val featureEffectiveness = featureRanker.rank(data, labels)
+
+    val result = features.zip(featureEffectiveness.toList())
+
+    println("Feature Effectiveness: $result")
+
+    val selectedFeatures = result.filter {
+        it.second>=cutoff
+    }.map {
+        it.first
+    }
+
+    println("Selected Features: $selectedFeatures")
+
+    return selectedFeatures
 }
 
 data class ExperimentResults(
