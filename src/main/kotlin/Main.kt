@@ -1,6 +1,5 @@
 import classifiers.Classifier
 import classifiers.SVMClassifier
-import classifiers.kNN
 import features.*
 import features.smu.*
 import features.DescHasLink
@@ -8,8 +7,9 @@ import features.jis.*
 import features.smu.LessThan30Followers
 import features.smu.LevenshteinDistanceLessThan30
 import kotlinx.serialization.ExperimentalSerializationApi
+import smile.feature.FeatureRanking
 import smile.feature.SignalNoiseRatio
-import smile.math.kernel.GaussianKernel
+import smile.feature.SumSquaresRatio
 import java.util.zip.*
 import kotlin.math.pow
 
@@ -101,14 +101,16 @@ fun main(args: Array<String>) {
         EntertainmentDomain().asLinear(),
         PoliticsDomain().asLinear(),
         SportsDomain().asLinear(),
-        DomainCount()
+        DomainCount(),
+        ListingCount()
     )
 
     val bothFeatures = SMUfeatures + JISfeatures
 
     val allFeatures = bothFeatures + newFeatures
 
-    val optimized = optimizedFeatures(allFeatures, Datasets.train)
+    val optimized = optimizedFeatures(allFeatures, Datasets.train, cutoff = 0.05)
+    val optimizedSignal = optimizedFeatures(allFeatures, Datasets.train, cutoff = 0.1, featureRanker = SignalNoiseRatio())
 
     //val kernel = GaussianKernel(1.0/bothFeatures.size)
 
@@ -151,10 +153,10 @@ fun main(args: Array<String>) {
             val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
             runExperiment("Optimized (SVM) Dev Data",optimized_svm, Datasets.dev)
         },
-        {
-            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
-            runExperiment("Optimized (KNN) Dev Data",optimized_knn, Datasets.dev)
-        },
+//        {
+//            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
+//            runExperiment("Optimized (KNN) Dev Data",optimized_knn, Datasets.dev)
+//        },
         {
             val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
             runExperiment("Optimized (SVM) Test Data",optimized_svm, Datasets.test)
@@ -164,9 +166,25 @@ fun main(args: Array<String>) {
             runExperiment("Optimized (SVM) Train Data",optimized_svm, Datasets.train)
         },
         {
-            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
-            runExperiment("Optimized (SVM) Support Data",optimized_svm, Datasets.support)
+            val optimized_svm = SVMClassifier(features = optimizedSignal,training_data = Datasets.train)
+            runExperiment("Optimized Sginal to Noise (SVM) Dev Data",optimized_svm, Datasets.dev)
         },
+//        {
+//            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
+//            runExperiment("Optimized (KNN) Dev Data",optimized_knn, Datasets.dev)
+//        },
+        {
+            val optimized_svm = SVMClassifier(features = optimizedSignal,training_data = Datasets.train)
+            runExperiment("Optimized Sginal to Noise (SVM) Test Data",optimized_svm, Datasets.test)
+        },
+        {
+            val optimized_svm = SVMClassifier(features = optimizedSignal,training_data = Datasets.train)
+            runExperiment("Optimized Sginal to Noise (SVM) Train Data",optimized_svm, Datasets.train)
+        },
+//        {
+//            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
+//            runExperiment("Optimized (SVM) Support Data",optimized_svm, Datasets.support)
+//        },
     )
 
     experiments.forEach {
@@ -203,8 +221,7 @@ fun main(args: Array<String>) {
 
 }
 
-fun optimizedFeatures(features: List<LinearFeature>, dataset: Dataset, cutoff: Double = 0.1) : List<LinearFeature>{
-    val featureRanker = SignalNoiseRatio()
+fun optimizedFeatures(features: List<LinearFeature>, dataset: Dataset, cutoff: Double = 0.1, featureRanker : FeatureRanking = SumSquaresRatio()) : List<LinearFeature>{
 
 //    val numberedFeatures = features.withIndex().associate {
 //        it.index to it.value
