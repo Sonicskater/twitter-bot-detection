@@ -50,11 +50,7 @@ fun main(args: Array<String>) {
         //MISSING: Description vs Tweets, //not sure what this means
         //MISSING: Num Tweets per Day, // missing data
         //MISSING: Uses Emotions, // Might not be possible, can't do sentiment analysis
-        //MISSING: Tweets from mobile, // missing data
-
         IsMultilingual().asLinear(), // WARNING: EXTREMELY PERFORMANCE AND MEMORY INTENSIVE!
-        //MISSING: Tweet via PC, // missing data
-
         NameContainsSymbols().asLinear(),
         //MISSING: Pictures in tweets, // missing data
         NameContainsNumbers().asLinear(),
