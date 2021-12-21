@@ -47,7 +47,7 @@ fun main(args: Array<String>) {
         UsingDefaultProfileImage().asLinear(),
         HighLinksToTweetRatio().asLinear(),
         //MISSING: Repeated Words,
-        //MISSING: Comments Ratio,
+        CommentsRatio(),
         //MISSING: Tweet Time Pattern, //missing data
         //MISSING: Following Interest vs Tweets, //content analysis
         //MISSING: Description vs Tweets, //not sure what this means
