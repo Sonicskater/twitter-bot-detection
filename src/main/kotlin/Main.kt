@@ -277,9 +277,10 @@ fun runExperiment(
     var falseP = 0.0
     dataset.filter {
         it.isBot() != null
-    }.map {
-        val isUserBot = it.isBot()!!
-        val match =  classifier.classify(it).isBot() == isUserBot
+    }.withIndex().map { (i,user) ->
+        val isUserBot = user.isBot()!!
+        val match =  classifier.classify(user).isBot() == isUserBot
+        println("classified: $i")
         if (match){
             correct++
         } else if (isUserBot) {
