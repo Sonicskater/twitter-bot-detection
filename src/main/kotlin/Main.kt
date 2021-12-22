@@ -167,7 +167,7 @@ fun main(args: Array<String>) {
         },
         {
             val optimized_svm = SVMClassifier(features = optimizedSignal,training_data = Datasets.train)
-            runExperiment("Optimized Sginal to Noise (SVM) Dev Data",optimized_svm, Datasets.dev)
+            runExperiment("Optimized Signal to Noise (SVM) Dev Data",optimized_svm, Datasets.dev)
         },
 //        {
 //            val optimized_knn = kNN(k = 50, features = optimized, training_data = Datasets.train)
@@ -175,11 +175,11 @@ fun main(args: Array<String>) {
 //        },
         {
             val optimized_svm = SVMClassifier(features = optimizedSignal,training_data = Datasets.train)
-            runExperiment("Optimized Sginal to Noise (SVM) Test Data",optimized_svm, Datasets.test)
+            runExperiment("Optimized Signal to Noise (SVM) Test Data",optimized_svm, Datasets.test)
         },
         {
             val optimized_svm = SVMClassifier(features = optimizedSignal,training_data = Datasets.train)
-            runExperiment("Optimized Sginal to Noise (SVM) Train Data",optimized_svm, Datasets.train)
+            runExperiment("Optimized Signal to Noise (SVM) Train Data",optimized_svm, Datasets.train)
         },
 //        {
 //            val optimized_svm = SVMClassifier(features = optimized,training_data = Datasets.train)
