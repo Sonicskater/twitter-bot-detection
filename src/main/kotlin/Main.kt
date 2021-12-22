@@ -1,5 +1,6 @@
 import classifiers.Classifier
 import classifiers.SVMClassifier
+import classifiers.kNN
 import features.*
 import features.smu.*
 import features.DescHasLink
@@ -115,19 +116,19 @@ fun main(args: Array<String>) {
     //val kernel = GaussianKernel(1.0/bothFeatures.size)
 
     val experiments = sequenceOf(
-//        {
-//
-//            val SVM = SVMClassifier(features = SMUfeatures,training_data = Datasets.train)
-//            runExperiment("SMU (SVM)",SVM,Datasets.dev)
-//        },
+        {
+
+            val SVM = SVMClassifier(features = SMUfeatures,training_data = Datasets.train)
+            runExperiment("SMU (SVM)",SVM,Datasets.dev)
+        },
 //        {
 //            val SVM_knn = kNN(k = 50, features = SMUfeatures, training_data = Datasets.train)
 //            runExperiment("SMU (KNN)",SVM_knn,Datasets.dev)
 //        },
-//        {
-//            val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
-//            runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)
-//        },
+        {
+            val JIS_knn = kNN(k = 50, features = JISfeatures, training_data = Datasets.train)
+            runExperiment("JIS (KNN)",JIS_knn,Datasets.dev)
+        },
 //        {
 //            val JIS_svm = SVMClassifier(features = JISfeatures,training_data = Datasets.train)
 //            runExperiment("JIS (SVM)",JIS_svm,Datasets.dev)

@@ -11,6 +11,8 @@ class IsMultilingual : BinaryFeature {
 
     val detector = LanguageDetectorBuilder.fromAllSpokenLanguages().build()
 
+    val langs : MutableMap<Language,LanguageDetector> = mutableMapOf()
+
     override fun hasFeature(user: User): Boolean {
 
         val data = user.tweets?.asSequence()?.map {
@@ -30,11 +32,11 @@ class IsMultilingual : BinaryFeature {
 
         //println("Locked Language: ${tweetLang.name}")
 
-        // cache the detectors to prevent huge memory pressure
-//        val lockedOn = langs.getOrPut(tweetLang){
-//            LanguageDetectorBuilder.fromLanguages(tweetLang, Language.UNKNOWN, Language.LATIN).build()
-//        }
-        val lockedOn = detector
+//         cache the detectors to prevent huge memory pressure
+        val lockedOn = langs.getOrPut(tweetLang){
+            LanguageDetectorBuilder.fromLanguages(tweetLang, Language.UNKNOWN, Language.LATIN).build()
+        }
+//        val lockedOn = detector
         return data.any {
             lockedOn.detectLanguageOf(it) != tweetLang
         }
