@@ -9,7 +9,6 @@ import java.util.*
 interface Tweet{
     val text: String
     val hasImage: Boolean
-    val normalized : String
 }
 
 interface Retweet : Tweet{
@@ -20,15 +19,9 @@ interface Reply : Tweet {
     val user : String
 }
 
-
-private val normalizer = SimpleNormalizer.getInstance()
-
 private open class ConcreteTweet(
     override val text: String, override val hasImage: Boolean
 ) : Tweet{
-    override val normalized : String by lazy{
-        normalizer.normalize(text)
-    }
 }
 
 private class ConcreteReply(override val user: String, text: String, hasImage: Boolean) : ConcreteTweet(text, hasImage), Reply
