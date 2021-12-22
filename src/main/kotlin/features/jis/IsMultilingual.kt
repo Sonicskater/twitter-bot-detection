@@ -13,10 +13,12 @@ class IsMultilingual : BinaryFeature {
 
     val langs : MutableMap<Language,LanguageDetector> = mutableMapOf()
 
+    private val normalizer = SimpleNormalizer.getInstance()
+
     override fun hasFeature(user: User): Boolean {
 
         val data = user.tweets?.asSequence()?.map {
-            it.normalized
+            normalizer.normalize(it.text)
         } ?: return false
 
         val tweetLang = data
