@@ -10,4 +10,10 @@ public class DomainCount implements LinearFeature {
     public float hasFeature(@NotNull User user) {
         return (float)user.getDomain().size() / 4;
     }
+
+    @NotNull
+    @Override
+    public String name() {
+        return "DomainCount";
+    }
 }

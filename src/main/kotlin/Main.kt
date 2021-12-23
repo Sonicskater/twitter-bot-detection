@@ -245,7 +245,11 @@ fun optimizedFeatures(features: List<LinearFeature>, dataset: Dataset, cutoff: D
 
     val result = features.zip(featureEffectiveness.toList())
 
-    println("Feature Effectiveness: $result")
+    println("Feature Effectiveness:")
+    for (i in result){
+        //formatted for latex output
+        println("${i.first.name()} & ${i.second} \\\\")
+    }
 
     val selectedFeatures = result.filter {
         it.second>=cutoff
@@ -253,7 +257,10 @@ fun optimizedFeatures(features: List<LinearFeature>, dataset: Dataset, cutoff: D
         it.first
     }
 
-    println("Selected Features: $selectedFeatures")
+    println("Selected Features:")
+    for (i in selectedFeatures){
+        println(i.name())
+    }
 
     return selectedFeatures
 }

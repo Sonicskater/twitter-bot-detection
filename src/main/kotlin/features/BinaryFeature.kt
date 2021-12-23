@@ -17,5 +17,9 @@ fun BinaryFeature.asLinear() : LinearFeature {
             }
         }
 
+        override fun name(): String {
+            return this@asLinear::class.simpleName ?: ""
+        }
+
     }
 }

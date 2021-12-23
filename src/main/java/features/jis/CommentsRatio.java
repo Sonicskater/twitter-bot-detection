@@ -27,5 +27,12 @@ public class CommentsRatio implements LinearFeature {
         }
         return (float)numReplies / numTweets;
     }
+
+
+    @NotNull
+    @Override
+    public String name() {
+        return "CommentsRatio";
+    }
 }
 
